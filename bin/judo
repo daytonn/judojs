@@ -1,0 +1,34 @@
+#!/usr/bin/env ruby -w
+
+$LOAD_PATH << '../lib'
+require "rubygems"
+require "simpleconsole"
+require 'judo.rb'
+
+class Controller < SimpleConsole::Controller
+  params :bool => {:c => :compress,
+                   :b => :build_core,
+                   :h => :help}
+  def default
+    
+  end
+  
+end
+
+class View
+  def default
+    puts <<DOC
+Usage: judo [action] [options]
+
+Description: 
+The judo command line tool will compile and compress your judo application into modules.
+
+To compile and compress your judo application into module files:
+
+  judo compile -c
+
+DOC
+  end
+end
+
+SimpleConsole::Application.run(ARGV, Controller, View)

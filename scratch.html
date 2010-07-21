@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<head>
+	<title>Scratch</title>
+	<script type="text/javascript" charset="utf-8">
+		function alwaysThrow() {
+			try {
+				throw "always throw";
+			}
+			catch(error) {
+				console.log('');
+			}
+		}
+		
+		try {
+			alwaysThrow();
+			alert('false');
+		}
+		catch(error) {
+			alert('true');
+		}
+	</script>
+</head>
+<body>
+
+</body>
