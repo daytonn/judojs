@@ -1,11 +1,3 @@
-//
-//  utilites
-//
-//  Created by Dayton Nolan on 2010-05-03.
-//  Copyright (c) 2010 Magic Beans Software. All rights reserved.
-//
-
-// null console for browsers without one
 if(window['console'] === undefined) {
 	window.console = {
 		log: function(message) {
