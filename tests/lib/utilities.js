@@ -27,25 +27,6 @@ function isTypeof(type, variable) {
 	}
 }
 
-
-
-function areTypesof(variables, types) {
-	var len = variables.length;
-	var valid = true;
-	var errors = [];
-	for (i = 0; i < len; i++) {
-		if (!isTypeof(variables[i], types[i])) {
-			valid = false;
-			errors.push("Argument " + i + "is not " + types[i]);
-		}
-	}
-	if (errors.length > 0) {
-		alert(errors.join("\n"));
-	}
-}
-
-
-
 function exists(variable) {
 	var exists = true;
 

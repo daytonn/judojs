@@ -1,49 +1,85 @@
+var undeclared;
+var undefined_var = undefined;
+var null_var = null;
+var empty_string = '';
+var zero = 0;
+var false_var = false;
+var empty_array = [];
+var array = ['one', 'two', 'three'];
+var bool = true;
+var date = new Date();
+var number = 1;
+var string = 'Hello World';
+var regex = new RegExp(/^test/);
+var object = {};
+var func = function () {};
+var number_string = '56';
+
 module("doesNotExist() tests");
 
 test("Non-existent variable is true", function() {
-	var undeclared;
-	var undefined_var = undefined;
-	var null_var = null;
 	equals(doesNotExist(undeclared), true, "Undeclared variable doesn't exist");
 	equals(doesNotExist(undefined_var), true, "Undefined variable doesn't exist");
 	equals(doesNotExist(null_var), true, "Null variable doesn't exist");
 });
 
+test("Existent variable is true", function() {
+  equals(doesNotExist(empty_string), false, "Empty string exists" );
+	equals(doesNotExist(empty_array), false, "Empty array exists" );
+  equals(doesNotExist(zero), false, "Zero exists" );
+	equals(doesNotExist(false_var), false ,"False exists");
+});
+
 module("exists() tests");
 
 test("Non-existent variable is false", function() {
-	var undeclared;
-	var undefined_var = undefined;
-	var null_var = null;
 	equals(exists(undeclared), false, "Undeclared variable doesn't exist");
 	equals(exists(undefined_var), false, "Undefined variable doesn't exist");
 	equals(exists(null_var), false, "Null variable doesn't exist");
 });
 
 test("Existent variable is true", function() {
-	var empty_string = '';
-	var zero = 0;
-	var false_var = false;
-	var empty_array = [];
   equals(exists(empty_string), true, "Empty string exists" );
 	equals(exists(empty_array), true, "Empty array exists" );
   equals(exists(zero), true, "Zero exists" );
 	equals(exists(false_var), true ,"False exists");
 });
 
+module("isTypeof() tests");
+
+test("isType of determines the correct types", function() {	
+	equals(isTypeof(Array, array), true, 'isTypeof(Array, array)');
+	equals(isTypeof(Boolean, bool), true, "isTypeof(Boolean, bool)");
+	equals(isTypeof(Date, date), true, "isTypeof(Date, date)");
+	equals(isTypeof(Number, number), true, "isTypeof(Number, number)");
+	equals(isTypeof(String, string), true, "isTypeof(String, string)");
+	equals(isTypeof(RegExp, regex), true, "isTypeof(RegExp, regex)");
+	equals(isTypeof(Object, object), true, "isTypeof(Object, object)");
+	equals(isTypeof(Function, func), true, "isTypeof(Function, func)");
+	
+	equals(isTypeof(Array, func), false, 'isTypeof(Array, func)');
+	equals(isTypeof(Boolean, object), false, "isTypeof(Boolean, object)");
+	equals(isTypeof(Date, regex), false, "isTypeof(Date, regex)");
+	equals(isTypeof(Number, string), false, "isTypeof(Number, string)");
+	equals(isTypeof(String, number), false, "isTypeof(String, number)");
+	equals(isTypeof(RegExp, date), false, "isTypeof(RegExp, date)");
+	equals(isTypeof(Object, func), false, 'isTypeof(Object, func)');
+	equals(isTypeof(Function, object), false, 'isTypeof(Function, object)');	
+});
+
+module("method() tests");
+
+test("Can create a method", function() {
+	Object.method('foo', function () {
+		return "Hello World";
+	});
+	ok(isTypeof(Function, object.foo), "created method foo on Object");
+	equals(object.foo(), "Hello World", "object.foo()");
+});
+
 module("is_a() tests");
 
-test("get tests", function() {
-	var array = [];
-	var bool = true;
-	var date = new Date();
-	var number = 1;
-	var string = 'Hello World';
-	var regex = new RegExp(/^test/);
-	var object = {};
-	var func = function() {
-		document.writeln('Hello World');
-	};
+test("Can get types", function() {
 	equals(array.is_a(), 'Array', "array.is_a()");
 	equals(bool.is_a(), 'Boolean', "bool.is_a()");
 	equals(date.is_a(), 'Date', "date.is_a()");
@@ -54,17 +90,7 @@ test("get tests", function() {
 	equals(func.is_a(), 'Function', "func.is_a()");
 });
 
-test("expected tests", function() {
-	var array = [];
-	var bool = true;
-	var date = new Date();
-	var number = 1;
-	var string = 'Hello World';
-	var regex = new RegExp(/^test/);
-	var object = {};
-	var func = function() {
-		document.writeln('Hello World');
-	};
+test("Can test types", function() {
 	equals(array.is_a('Array'), true, "array.is_a('Array')");
 	equals(array.is_a('Boolean'), false, "array.is_a('Boolean')");
 	equals(array.is_a('Date'), false, "array.is_a('Date')");
@@ -141,15 +167,11 @@ test("expected tests", function() {
 module("is_empty() tests");
 
 test("Can test a string for emptiness", function() {
-	var empty_string = "";
-	var string = "Hello World";
 	equals(empty_string.is_empty(), true, "empty_string.is_empty()");
 	equals(string.is_empty(), false, "string.is_empty()");
 });
 
 test("Can test an Array for emptiness", function() {
-	var empty_array = [];
-	var array = ['one', 'two', 'three'];
 	equals(empty_array.is_empty(), true, "empty_array.is_empty()");
 	equals(array.is_empty(), false, "array.is_empty()");
 });
@@ -180,7 +202,17 @@ test("Can reverse a string", function() {
 });
 
 test("Can convert a string to number", function() {
-	var string = '56';
 	var number = string.to_n();
 	equals(number.is_a(), 'Number', 'string.to_n()');
+});
+
+module("Array tests");
+
+test("Can iterate over an array", function() {
+	var test_array = [];
+	array.each(function(number) {
+		test_array.push(number);
+	});
+	
+	same(test_array, array, "test_array");
 });
