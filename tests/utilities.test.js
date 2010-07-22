@@ -67,6 +67,20 @@ test("isType of determines the correct types", function() {
 	equals(isTypeof(Function, object), false, 'isTypeof(Function, object)');	
 });
 
+module("isNumber() tests");
+
+test("Can determine a number", function() {
+	var negative_number = -5;
+	var decimal = '23.6';
+	var version_number = '0.1.3';
+	
+	equals(isNumber(number_string), true, "isNumber(number_string)");
+	equals(isNumber(string), false, "isNumber(string)");
+	equals(isNumber(negative_number), true, "isNumber(negative_number)");
+	equals(isNumber(decimal), true, "isNumber(decimal)");
+	equals(isNumber(version_number), false, "isNumber(version_number)");
+});
+
 module("method() tests");
 
 test("Can create a method", function() {
@@ -164,31 +178,6 @@ test("Can test types", function() {
 	equals(func.is_a('Function'), true, "func.is_a('Function')");
 });
 
-module("is_empty() tests");
-
-test("Can test a string for emptiness", function() {
-	equals(empty_string.is_empty(), true, "empty_string.is_empty()");
-	equals(string.is_empty(), false, "string.is_empty()");
-});
-
-test("Can test an Array for emptiness", function() {
-	equals(empty_array.is_empty(), true, "empty_array.is_empty()");
-	equals(array.is_empty(), false, "array.is_empty()");
-});
-
-test("Can test an Object for emptiness", function() {
-	var empty_object = {};
-
-	var object = {
-		"one": 1,
-		"two": 2,
-		"three": 3
-	};
-		
-	equals(empty_object.is_empty(), true, 'empty_object.is_empty()');
-	equals(object.is_empty(), false, 'object.is_empty()');
-});
-
 module("String tests");
 
 test("Can capitalize a string", function() {
@@ -206,7 +195,17 @@ test("Can convert a string to number", function() {
 	equals(number.is_a(), 'Number', 'string.to_n()');
 });
 
+test("Can test a string for emptiness", function() {
+	equals(empty_string.is_empty(), true, "empty_string.is_empty()");
+	equals(string.is_empty(), false, "string.is_empty()");
+});
+
 module("Array tests");
+
+test("Can test an Array for emptiness", function() {
+	equals(empty_array.is_empty(), true, "empty_array.is_empty()");
+	equals(array.is_empty(), false, "array.is_empty()");
+});
 
 test("Can iterate over an array", function() {
 	var test_array = [];
@@ -215,4 +214,11 @@ test("Can iterate over an array", function() {
 	});
 	
 	same(test_array, array, "test_array");
+});
+
+test("Can test an Array for property", function() {
+	ok(array.contains('one'), "array contains one");
+	ok(array.contains('two'), "array contains two");
+	ok(array.contains('three'), "array contains three");
+	equals(array.contains('four'), false, "array.contains('four')");
 });
