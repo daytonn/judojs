@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.description = %q{Judo is a javascript meta framework. Judo allows you to put include statements in your javascript and then uses the Juscr compiler to create a compiled module of all included scripts.}
   s.email = %q{daytonn@gmail.com}
   s.executables = ["judo"]
-  s.files = ["LICENSE.markdown", "bin/judo", "lib/judo.rb", "lib/judo.js", "lib/utilities.js"]
+  s.files = ["LICENSE.markdown", "bin/judo", "lib/judo.rb", "lib/utilities.js"]
   s.homepage = %q{http://daytonnolan.com/judo}
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.4}

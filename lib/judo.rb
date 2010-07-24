@@ -8,7 +8,6 @@ require 'rubygems'
 require 'yaml'
 require 'jsmin'
 
-
 class Judo
   
   attr_accessor :version, :controller_dir, :name, :output, :root
@@ -16,14 +15,15 @@ class Judo
   def initialize()
     @root = Dir.getwd << '/'
     @version = '0.1.0'
-    @controller_dir = @root + 'application/controllers'
-    @judo_file = "#{@root}application/judo.js"
+    @controller_dir = @root + 'controllers'
+    @judo_file = "#{@root}lib/judo.js"
     @compress = false
+    @project_dirs = 'application', 'controllers', 'lib', 'models', 'modules', 'plugins', 'tests', 'elements'
+    @project_files = 'lib/utilities.js', 'lib/judo.js'
   end
   
   def compile
     begin
-      raise Exception, "There is no judo.yml file", caller unless File.exist? "#{@root}judo.yml"
       get_config
       @compress = @output == 'compressed' ? true : false
       puts '>>> Compiling Judo modules'
@@ -37,7 +37,7 @@ class Judo
         create_tmp_controller controller_file
 
         compiler = Juscr.new
-        compiler.compile("application/modules/#{module_name}.module.js", requirements, @compress, "// File generated #{Time.now.to_s} by judo")
+        compiler.compile("application/#{module_name}.js", requirements, @compress, "// File generated #{Time.now.to_s} by judo")
 
         File.delete './.tmp.controller.js'
       end
@@ -49,9 +49,9 @@ class Judo
   
   def get_config
     begin
-      raise IOError, "judo.yml does not exist", caller unless File.exists? "#{@root}judo.yml"
-      size = File.size? "#{@root}judo.yml"
-      File.open("#{@root}judo.yml", "r") do |file|
+      raise IOError, "judo.conf does not exist", caller unless File.exists? "#{@root}judo.conf"
+      size = File.size? "#{@root}judo.conf"
+      File.open("#{@root}judo.conf", "r") do |file|
         yaml = file.sysread(size)
         config = YAML::load yaml
         @name = config['name']
@@ -76,8 +76,7 @@ class Judo
   def parse_controller(controller)
     controller_file = Array.new
     requirements = Array.new
-    requirements.push "./application/judo.js"
-    IO.foreach("./application/controllers/#{controller}") do |line|
+    IO.foreach("#{root}controllers/#{controller}") do |line|
       if line.match(/\/\/\s*@include/)
         parsed_line = line.sub(/^\/\/\s*@include\s*/, '').sub(/^\"/, '').sub(/\"$/, '').chomp
         requirement = parsed_line
@@ -98,20 +97,19 @@ class Judo
   
   def compile_core
     begin
+      get_config if @name.nil? and @output.nil?
       compiled_core = String.new
       root = File.dirname(__FILE__) << '/'
       core_compiler = JuscrCompiler.new
-      core_files = "#{root}base.js", "#{root}utilities.js", "#{root}judo.js"
-      
-      core_files.each do |core_file|
-        raise IOError, "Core file #{core_file} does not exist" unless File.exists? core_file
-        size = File.size? core_file
-        File.open(core_file, "r") do |file|
-          compiled_core << file.sysread(size)
-        end
+      core_file = "#{root}utilities.js"
+
+      raise IOError, "Core file #{core_file} does not exist" unless File.exists? core_file
+      size = File.size? core_file
+      File.open(core_file, "r") do |file|
+        compiled_core << file.sysread(size)
       end
       
-      compiled_core << create_judo_snippet
+      compiled_core << "\n\nvar #{@name} = {};"
       create_judo_file compiled_core
     rescue RuntimeError => e
       puts e.message
@@ -132,12 +130,27 @@ class Judo
     end
   end
   
-  def create_judo_snippet
-    snippet = "var #{@name} = {\n\tversion: '0.1.0'\n};";
-  end
-  
   def remove_extension(filename)
     filename = filename.sub(/\.\w*\.js/, '')
+  end
+  
+  def create_project(name)
+    @name = name
+    @output = 'expanded'
+    
+    File.open("#{@root}judo.conf", "w+") do |conf_file|
+      conf_content = <<-CONF
+name: #{@name}
+output: #{@output}
+      CONF
+      conf_file.syswrite(conf_content)
+    end
+    
+    @project_dirs.each do |directory|
+      Dir.mkdir("#{@root}#{directory}") unless File.directory?("#{@root}#{directory}")
+    end
+    
+    compile_core
   end
   
 end
