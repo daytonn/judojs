@@ -1,9 +1,9 @@
-// File generated Wed Aug 04 01:01:59 -0500 2010 by judo
+// File generated Thu Aug 05 23:42:34 -0500 2010 by judo
 
-(function($){$.fn.testplugin=function(options){var defaults={};var options=$.extend(defaults,options);return this.each(function(){});};})(jQuery);
+(function($){$.fn.testplugin=function(options){var defaults={};var options=$.extend(defaults,options);return this.each(function(){console.log(this);});};})(jQuery);
 
-$(document).ready(function(){JudoApp.test_id=$('#test-element-with-id');console.log(JudoApp.test_id);});
+$(document).ready(function(){JudoApp.TestModule.test_id=$('#test-element-with-id');console.log(JudoApp.TestModule.test_id);});
 
 JudoApp.test_model={some_data_member:'some data value'};
 
-$(document).ready(function(){JudoApp.test_id.click(function(){alert('this is a dummy function');alert(JudoApp.test_model.some_data_member);});});
+JudoApp.TestModule.actions=function(){console.log(JudoApp.TestModule.test_id.html());};$(document).ready(function(){JudoApp.TestModule.run();});

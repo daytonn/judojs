@@ -127,9 +127,12 @@ class Judo
       end
     end
     
+    core = IO.readlines "#{@project_path}lib/judo.js"
+
     filename = "#{@project_path}application/" + @judo_filename + ".js"
     File.open(filename, "w+") do |file|
-      file << "var #{@name} = new JudoApplication();"
+      file << core.join("")
+      file << "\n\nvar #{@name} = new JudoApplication();"
       file << modules
     end
   end

@@ -4,9 +4,10 @@
 // @include "elements/test.elements.js"
 // @include "models/test.model.js"
 
-$(document).ready(function() {
-	JudoApp.test_id.click(function() {
-		alert('this is a dummy function');
-		alert(JudoApp.test_model.some_data_member);
-	});
+JudoApp.TestModule.actions = function() {
+  console.log(JudoApp.TestModule.test_id.html());
+};
+
+$(document).ready(function(){
+  JudoApp.TestModule.run();
 });

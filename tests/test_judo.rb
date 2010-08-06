@@ -12,18 +12,19 @@ class TC_MyTest < Test::Unit::TestCase
 // @include "elements/test.elements.js"
 // @include "models/test.model.js"
 
-$(document).ready(function() {
-	JudoApp.test_id.click(function() {
-		alert('this is a dummy function');
-		alert(JudoApp.test_model.some_data_member);
-	});
+JudoApp.TestModule.actions = function() {
+  console.log(JudoApp.TestModule.test_id.html());
+};
+
+$(document).ready(function(){
+  JudoApp.TestModule.run();
 });
    FILE
    
    @test_elements_data = <<-FILE
 $(document).ready(function() {
-	JudoApp.test_id = $('#test-element-with-id');
-	console.log(JudoApp.test_id);
+	JudoApp.TestModule.test_id = $('#test-element-with-id');
+	console.log(JudoApp.TestModule.test_id);
 });
    FILE
    
@@ -40,7 +41,7 @@ JudoApp.test_model = {
         var options = $.extend(defaults, options);
 
         return this.each(function() {
-
+          console.log(this);
         });
         // End $(this).each()
     };

@@ -4,7 +4,7 @@
         var options = $.extend(defaults, options);
 
         return this.each(function() {
-
+          console.log(this);
         });
         // End $(this).each()
     };
