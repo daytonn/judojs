@@ -91,93 +91,6 @@ test("Can create a method", function() {
 	equals(object.foo(), "Hello World", "object.foo()");
 });
 
-module("is_a() tests");
-
-test("Can get types", function() {
-	equals(array.is_a(), 'Array', "array.is_a()");
-	equals(bool.is_a(), 'Boolean', "bool.is_a()");
-	equals(date.is_a(), 'Date', "date.is_a()");
-	equals(number.is_a(), 'Number', "number.is_a()");
-	equals(string.is_a(), 'String', "string.is_a()");
-	equals(regex.is_a(), 'RegExp', "regex.is_a()");
-	equals(object.is_a(), 'Object', "object.is_a()");
-	equals(func.is_a(), 'Function', "func.is_a()");
-});
-
-test("Can test types", function() {
-	equals(array.is_a('Array'), true, "array.is_a('Array')");
-	equals(array.is_a('Boolean'), false, "array.is_a('Boolean')");
-	equals(array.is_a('Date'), false, "array.is_a('Date')");
-	equals(array.is_a('Number'), false, "array.is_a('Number')");
-	equals(array.is_a('String'), false, "array.is_a('String')");
-	equals(array.is_a('RegExp'), false, "array.is_a('RegExp')");
-	equals(array.is_a('Object'), false, "array.is_a('Object')");
-	equals(array.is_a('Function'), false, "array.is_a('Function')");
-	
-	equals(bool.is_a('Array'), false, "bool.is_a('Array') is false");
-	equals(bool.is_a('Boolean'), true, "bool.is_a('Boolean') is true");
-	equals(bool.is_a('Date'), false, "bool.is_a('Date') is false");
-	equals(bool.is_a('Number'), false, "bool.is_a('Number') is false");
-	equals(bool.is_a('String'), false, "bool.is_a('String') is false");
-	equals(bool.is_a('RegExp'), false, "bool.is_a('RegExp') is false");
-	equals(bool.is_a('Object'), false, "bool.is_a('Object') is false");
-	equals(bool.is_a('Function'), false, "bool.is_a('Function') is false");
-	
-	equals(date.is_a('Array'), false, "date.is_a('Array')");
-	equals(date.is_a('Boolean'), false, "date.is_a('Boolean')");
-	equals(date.is_a('Date'), true, "date.is_a('Date')");
-	equals(date.is_a('Number'), false, "date.is_a('Number')");
-	equals(date.is_a('String'), false, "date.is_a('String')");
-	equals(date.is_a('RegExp'), false, "date.is_a('RegExp')");
-	equals(date.is_a('Object'), false, "date.is_a('Object')");
-	equals(date.is_a('Function'), false, "date.is_a('Function')");
-	
-	equals(number.is_a('Array'), false, "number.is_a('Array')");
-	equals(number.is_a('Boolean'), false, "number.is_a('Boolean')");
-	equals(number.is_a('Date'), false, "number.is_a('Date')");
-	equals(number.is_a('Number'), true, "number.is_a('Number')");
-	equals(number.is_a('String'), false, "number.is_a('String')");
-	equals(number.is_a('RegExp'), false, "number.is_a('RegExp')");
-	equals(number.is_a('Object'), false, "number.is_a('Object')");
-	equals(number.is_a('Function'), false, "number.is_a('Function')");
-	
-	equals(string.is_a('Array'), false, "string.is_a('Array')");
-	equals(string.is_a('Boolean'), false, "string.is_a('Boolean')");
-	equals(string.is_a('Date'), false, "string.is_a('Date')");
-	equals(string.is_a('Number'), false, "string.is_a('Number')");
-	equals(string.is_a('String'), true, "string.is_a('String')");
-	equals(string.is_a('RegExp'), false, "string.is_a('RegExp')");
-	equals(string.is_a('Object'), false, "string.is_a('Object')");
-	equals(string.is_a('Function'), false, "string.is_a('Function')");
-	
-	equals(regex.is_a('Array'), false, "regex.is_a('Array')");
-	equals(regex.is_a('Boolean'), false, "regex.is_a('Boolean')");
-	equals(regex.is_a('Date'), false, "regex.is_a('Date')");
-	equals(regex.is_a('Number'), false, "regex.is_a('Number')");
-	equals(regex.is_a('String'), false, "regex.is_a('String')");
-	equals(regex.is_a('RegExp'), true, "regex.is_a('RegExp')");
-	equals(regex.is_a('Object'), false, "regex.is_a('Object')");
-	equals(regex.is_a('Function'), false, "regex.is_a('Function')");
-	
-	equals(object.is_a('Array'), false, "object.is_a('Array')");
-	equals(object.is_a('Boolean'), false, "object.is_a('Boolean')");
-	equals(object.is_a('Date'), false, "object.is_a('Date')");
-	equals(object.is_a('Number'), false, "object.is_a('Number')");
-	equals(object.is_a('String'), false, "object.is_a('String')");
-	equals(object.is_a('RegExp'), false, "object.is_a('RegExp')");
-	equals(object.is_a('Object'), true, "object.is_a('Object')");
-	equals(object.is_a('Function'), false, "object.is_a('Function')");
-	
-	equals(func.is_a('Array'), false, "func.is_a('Array')");
-	equals(func.is_a('Boolean'), false, "func.is_a('Boolean')");
-	equals(func.is_a('Date'), false, "func.is_a('Date')");
-	equals(func.is_a('Number'), false, "func.is_a('Number')");
-	equals(func.is_a('String'), false, "func.is_a('String')");
-	equals(func.is_a('RegExp'), false, "func.is_a('RegExp')");
-	equals(func.is_a('Object'), false, "func.is_a('Object')");
-	equals(func.is_a('Function'), true, "func.is_a('Function')");
-});
-
 module("String tests");
 
 test("Can capitalize a string", function() {
@@ -192,7 +105,7 @@ test("Can reverse a string", function() {
 
 test("Can convert a string to number", function() {
 	var number = string.to_n();
-	equals(number.is_a(), 'Number', 'string.to_n()');
+	equals(isTypeof(Number, number), true, 'string.to_n()');
 });
 
 test("Can test a string for emptiness", function() {

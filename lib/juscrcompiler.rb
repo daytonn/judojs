@@ -13,7 +13,6 @@ class JuscrCompiler
     begin
       compress = compress.nil? ? false : true;
       @compress = compress
-      @root = Dir.getwd + '/'
     rescue RuntimeError => e
       puts e.message  
       puts e.backtrace.inspect
@@ -37,8 +36,8 @@ class JuscrCompiler
     @merged = Array.new
     @files.each do |file|
       begin
-        raise IOError, "#{file} does not exist", caller unless File.exists? "#{@root}#{file}"
-        File.open("#{@root}#{file}", "r") do |the_file|
+        raise IOError, "#{file} does not exist", caller unless File.exists? "#{file}"
+        File.open("#{file}", "r") do |the_file|
           @merged.push read_file the_file unless the_file.nil?
         end
       rescue RuntimeError => e
@@ -61,10 +60,9 @@ class JuscrCompiler
   
   def create_file
     begin
-      is_new_file = (File.exists? "#{@root}#{@filename}") ? false : true
-      File.open("#{@root}#{@filename}", "w+") do |the_file|
+      is_new_file = (File.exists? "#{@filename}") ? false : true
+      File.open("#{@filename}", "w+") do |the_file|
         the_file.syswrite @message + @compiled_content
-        puts is_new_file ? "created #{@root}#{@filename}" : "updated #{@root}#{@filename}"
       end
     rescue IOError => e
       puts "#{e.class} #{e.message} #{e.backtrace.join($/)}"
