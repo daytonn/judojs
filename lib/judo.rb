@@ -2,12 +2,11 @@
 
 $LOAD_PATH << '../lib'
 
-require 'juscrcompiler.rb'
-require 'juscr.rb'
 require 'rubygems'
 require 'yaml'
 require 'jsmin'
 require 'tempfile'
+require 'sprockets'
 
 class Judo
   attr_accessor :root,
@@ -39,12 +38,12 @@ class Judo
       
       get_config
       @compress = (@output == 'compressed') ? true : false
-
+      
       project_modules = Array.new
       @judo_dirs.each do |judo_dir|
-        directory_modules = get_directory_contents "#{@project_path}#{judo_dir}"
-        project_modules = project_modules + directory_modules
+        project_modules.push(get_directory_contents "#{@project_path}#{judo_dir}")
       end
+      project_modules.flatten!
       
       @modules.clear
       
@@ -54,12 +53,21 @@ class Judo
         requirements, content = parse_module(mod);
         create_tmp_module(module_name, content)
         requirements.push(".tmp.#{module_name}.module.js")
-
-        compiler = Juscr.new
-        compiler.compile("#{@project_path}application/#{module_name}.js", requirements, @compress, "// File generated #{Time.now.to_s} by judo")
+        
+        secretary = Sprockets::Secretary.new(
+          :root         => "#{@project_path}",
+          :asset_root   => "#{@project_path}",
+          :load_path    => ["#{@project_path}"],
+          :source_files => requirements
+        )
+        
+        compiled_module = secretary.concatenation
+        compiled_module.save_to "#{@project_path}application/#{module_name}.js"
+        
         puts "#{@project_path}application/#{module_name}.js -compiled"
         File.delete "./.tmp.#{module_name}.module.js"
       end
+
       
       create_judo_application_file
     rescue Exception => e
@@ -138,30 +146,23 @@ class Judo
   end
   
   def compile_core
-      @compiled_core = String.new
       root = File.dirname(__FILE__) << '/'
-      core_compiler = JuscrCompiler.new
-      core_files = "#{root}utilities.js", "#{root}judo.js"
-
-      core_files.each do |core_file|
-        raise IOError, "Core file #{core_file} does not exist" unless File.exists? core_file
-        size = File.size? core_file
-        File.open(core_file, "r") do |file|
-          @compiled_core << file.sysread(size)
-        end
-      end
-
-      @compiled_core = JSMin.minify(@compiled_core)
-
-      File.open("#{@project_path}lib/judo.js", "w+") do |file|
-        file.syswrite(@compiled_core)
-      end
-
+      secretary = Sprockets::Secretary.new(
+        :root         => "#{root}",
+        :asset_root   => "#{root}",
+        :load_path    => ["#{root}"],
+        :source_files => ["#{root}utilities.js", "#{root}judo.js"]
+      )
+      
+      @compiled_core = secretary.concatenation
+      @compiled_core.save_to "#{@project_path}lib/judo.js"
+      
       create_judo_application_file
   end
 
   def create_tmp_module(name, content)
     begin
+      content = "// File generated #{Time.now.to_s} by judo\n" << content
       tmp_module = File.new("./.tmp.#{name}.module.js", "w+")
       raise IOError, "could not create ./.tmp.#{name}.module.js", caller unless File.exists? "./.tmp.#{name}.module.js"
       tmp_module << content if tmp_module
@@ -181,7 +182,7 @@ class Judo
     parts.last
   end
 
-  def create_project(name, output = 'expanded', subdir = '/')
+  def create_project(name, output = :expanded, subdir = '/')
     @name = name
     @judo_filename = name.downcase
     @output = output
@@ -189,8 +190,11 @@ class Judo
     subdir = '/' << subdir unless subdir.match(/^\//)
     @subdir = subdir
     @project_path = "#{@root}#{@subdir}"
-
+    puts ">>> Creating #{name} project in #{@project_path}"
+    
     judo_dirs = "[" << @judo_dirs.join(', ') << "]"
+    
+    conf_message = File.exists?("#{@project_path}judo.conf") ? 'judo.conf overwritten' : 'judo.conf created'
     File.open("#{@project_path}judo.conf", "w+") do |conf_file|
       conf_content = <<-CONF
 name: #{@name}
@@ -199,8 +203,11 @@ judo: #{judo_dirs}
       CONF
       conf_file.syswrite(conf_content)
     end
+    
+    puts conf_message
 
     @project_dirs.each do |directory|
+      puts File.directory?("#{@project_path}#{directory}") ? "#{directory} exists" : "#{directory} created"
       Dir.mkdir("#{@project_path}#{directory}") unless File.directory?("#{@project_path}#{directory}")
     end
 

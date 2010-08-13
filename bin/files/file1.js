@@ -1,1 +1,0 @@
-var one = "this is file one "
