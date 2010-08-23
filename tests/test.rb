@@ -4,11 +4,11 @@ judo = Judo.new
 judo.create_project('MyApplication', :expanded, 'fixtures')
 
 test_module_data = <<-FILE
-// @module TestModule
-// @include "plugins/test.plugin.js"
+//= @module TestModule
+//= require "../plugins/test.plugin.js"
 
-// @include "elements/test.elements.js"
-// @include "models/test.model.js"
+//= require "../elements/test.elements.js"
+//= require "../models/test.model.js"
 
 JudoApp.TestModule.actions = function() {
   console.log(JudoApp.TestModule.test_id.html());
@@ -47,8 +47,21 @@ test_plugin_data = <<-FILE
    FILE
   
 File.open('./fixtures/modules/test.module.js', 'w+') do |mod|
-  mod.syswrite(test_module_data)
+ mod.syswrite(test_module_data)
 end
+
+File.open('./fixtures/modules/another_test.module.js', 'w+') do |mod|
+  mod.syswrite("another_test.module.js")
+end
+
+File.open('./fixtures/modules/yet_another.test.module.js', 'w+') do |mod|
+  mod.syswrite("yet_another.test.module.js")
+end
+
+File.open('./fixtures/modules/space test.module.js', 'w+') do |mod|
+  mod.syswrite("space test.module.js")
+end
+
 File.open('./fixtures/elements/test.elements.js', 'w+') do |elements|
   elements.syswrite(test_elements_data)
 end

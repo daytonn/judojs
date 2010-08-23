@@ -39,41 +39,49 @@ class Judo
       get_config
       @compress = (@output == 'compressed') ? true : false
       
+      # Create an array of module folder contents
       project_modules = Array.new
       @judo_dirs.each do |judo_dir|
         project_modules.push(get_directory_contents "#{@project_path}#{judo_dir}")
       end
+      # Compress down to one array
       project_modules.flatten!
       
-      @modules.clear
-      
-      requirements = Array.new
+      @modules = Array.new
       project_modules.each do |mod|
-        module_name = remove_path(remove_extension(mod))      
-        requirements, content = parse_module(mod);
-        create_tmp_module(module_name, content)
-        requirements.push(".tmp.#{module_name}.module.js")
-        
+        module_name = remove_path(remove_extension(mod))
+        module_name = convert_to_camel_case module_name
+        @modules.push module_name 
+
         secretary = Sprockets::Secretary.new(
           :root         => "#{@project_path}",
           :asset_root   => "#{@project_path}",
           :load_path    => ["#{@project_path}"],
-          :source_files => requirements
+          :source_files => mod
         )
         
+        filename = module_name.downcase
         compiled_module = secretary.concatenation
-        compiled_module.save_to "#{@project_path}application/#{module_name}.js"
-        
-        puts "#{@project_path}application/#{module_name}.js -compiled"
-        File.delete "./.tmp.#{module_name}.module.js"
+        compiled_module.save_to "#{@project_path}application/#{filename}.js"
+        puts "application/#{filename}.js created"
       end
-
       
       create_judo_application_file
     rescue Exception => e
       puts e.message
       puts e.backtrace.inspect
     end
+  end
+  
+  def convert_to_camel_case(string)
+    pattern = /(\s|\_|\.|\-)/
+    parts = string.split pattern
+    parts.each_with_index do |part, i|
+      parts[i].slice! 0 if parts[i] =~ pattern
+      parts[i].capitalize!
+    end
+
+    string = parts.join ''
   end
   
   def get_config
@@ -102,27 +110,6 @@ class Judo
     end
 
     files
-  end
-  
-  def parse_module(mod)
-    module_file = Array.new
-    requirements = Array.new
-    module_name_found = false
-
-    IO.foreach("#{mod}") do |line|
-      if line.match(/\/\/\s*@module/)
-        module_name_found = true
-        module_name = line.sub(/^\/\/\s*@module\s*/, '').sub(/^\"/, '').sub(/\"$/, '').chomp
-        @modules.push(module_name)
-      elsif line.match(/\/\/\s*@include/)
-        requirement = line.sub(/^\/\/\s*@include\s*/, '').sub(/^\"/, '').sub(/\"$/, '').chomp
-        requirements.push(@project_path + requirement)
-      else 
-        module_file.push(line) unless line.match(/^\s*$/)
-      end
-    end
-
-    return requirements, module_file.join("")
   end
   
   def create_judo_application_file()
