@@ -47,16 +47,17 @@ class Judo
       # Compress down to one array
       project_modules.flatten!
       
-      @modules = Array.new
+      root = File.dirname(__FILE__) << '/'
+      
       project_modules.each do |mod|
         module_name = remove_path(remove_extension(mod))
         module_name = convert_to_camel_case module_name
         @modules.push module_name 
 
         secretary = Sprockets::Secretary.new(
-          :root         => "#{@project_path}",
-          :asset_root   => "#{@project_path}",
-          :load_path    => ["#{@project_path}"],
+          :root         => "#{root}",
+          :asset_root   => "#{root}",
+          :load_path    => ["#{root}", "#{@project_path}"],
           :source_files => mod
         )
         
@@ -122,12 +123,12 @@ class Judo
       end
     end
     
-    core = IO.readlines "#{@project_path}lib/judo.js"
-
     filename = "#{@project_path}application/" + @judo_filename + ".js"
+    
     File.open(filename, "w+") do |file|
-      file << core.join("")
-      file << "\n\nvar #{@name} = new JudoApplication();"
+      file << @compiled_core
+      file << "\n// Judo compiled --#{Time.now.to_s}"
+      file << "\nvar #{@name} = new JudoApplication();"
       file << modules
     end
   end
@@ -138,13 +139,14 @@ class Judo
         :root         => "#{root}",
         :asset_root   => "#{root}",
         :load_path    => ["#{root}"],
-        :source_files => ["#{root}utilities.js", "#{root}judo.js"]
+        :source_files => ["#{root}core/judo.js"]
       )
       
-      @compiled_core = secretary.concatenation
-      @compiled_core.save_to "#{@project_path}lib/judo.js"
-      
-      create_judo_application_file
+      @compiled_core = secretary.concatenation   
+  end
+  
+  def save_core
+    @compiled_core.save_to "#{@project_path}lib/judo.js"
   end
 
   def create_tmp_module(name, content)
@@ -199,6 +201,7 @@ judo: #{judo_dirs}
     end
 
     compile_core
+    save_core
   end
   
 end
