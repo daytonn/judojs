@@ -1,14 +1,3 @@
-(function($) {
-    $.fn.testplugin = function(options) {
-        var defaults = {};
-        var options = $.extend(defaults, options);
-
-        return this.each(function() {
-          console.log(this);
-        });
-    };
-})(jQuery);
-
 $(document).ready(function() {
 	JudoApp.TestModule.test_id = $('#test-element-with-id');
 	console.log(JudoApp.TestModule.test_id);

@@ -4,9 +4,6 @@ judo = Judo.new
 judo.create_project('MyApplication', :expanded, 'fixtures')
 
 test_module_data = <<-FILE
-//= @module TestModule
-//= require "../plugins/test.plugin.js"
-
 //= require "../elements/test.elements.js"
 //= require "../models/test.model.js"
 
@@ -18,6 +15,10 @@ $(document).ready(function(){
   JudoApp.TestModule.run();
 });
    FILE
+   
+test_global_data = <<-FILE
+//= require <utilities/all>
+  FILE
    
 test_elements_data = <<-FILE
 $(document).ready(function() {
@@ -31,45 +32,21 @@ JudoApp.test_model = {
 	some_data_member: 'some data value'
 };
    FILE
-   
-test_plugin_data = <<-FILE
-(function($) {
-    $.fn.testplugin = function(options) {
-        var defaults = {};
-        var options = $.extend(defaults, options);
-
-        return this.each(function() {
-          console.log(this);
-        });
-        // End $(this).each()
-    };
-})(jQuery);
-   FILE
   
 File.open('./fixtures/modules/test.module.js', 'w+') do |mod|
  mod.syswrite(test_module_data)
 end
 
-File.open('./fixtures/modules/another_test.module.js', 'w+') do |mod|
-  mod.syswrite("another_test.module.js")
-end
-
-File.open('./fixtures/modules/yet_another.test.module.js', 'w+') do |mod|
-  mod.syswrite("yet_another.test.module.js")
-end
-
-File.open('./fixtures/modules/space test.module.js', 'w+') do |mod|
-  mod.syswrite("space test.module.js")
+File.open('./fixtures/modules/global.module.js', 'w+') do |mod|
+  mod.syswrite(test_global_data)
 end
 
 File.open('./fixtures/elements/test.elements.js', 'w+') do |elements|
   elements.syswrite(test_elements_data)
 end
+
 File.open('./fixtures/models/test.model.js', 'w+') do |model|
   model.syswrite(test_model_data)
-end
-File.open('./fixtures/plugins/test.plugin.js', 'w+') do |model|
-  model.syswrite(test_plugin_data)
 end
 
 judo.compile

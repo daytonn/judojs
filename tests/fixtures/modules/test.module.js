@@ -1,6 +1,3 @@
-//= @module TestModule
-//= require "../plugins/test.plugin.js"
-
 //= require "../elements/test.elements.js"
 //= require "../models/test.model.js"
 
