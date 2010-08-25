@@ -1,23 +1,23 @@
 if (exists === undefined) {
-	function exists(variable) {
+	var exists = function(variable) {
 		return (variable === undefined) ? false : true;
-	}
+	};
 }
 
 if (!exists(doesNotExist)) {
-	function doesNotExist(variable) {
-		return exists(variable) ? false : true;
-	}
+	var doesNotExist = function(variable) {
+		return (variable === undefined) ? true : false;
+	};
 }
 
-if (doesNotExist(isTypeOf)) {
-	function isTypeof(type, variable) {
+if (doesNotExist(isTypeof)) {
+	var isTypeof = function(type, variable) {
 		try {
 			if (doesNotExist(type)) {
-				throw "type is undefined";
+				throw new SyntaxError("isTypeof(Type, variable): type is undefined");
 			}
 			if (doesNotExist(variable)) {
-				throw "variable is undefined";
+				throw new SyntaxError("isTypeof(Type, variable): variable is undefined");
 			}
 
 			return (variable.constructor == type) ? true : false;
@@ -25,24 +25,29 @@ if (doesNotExist(isTypeOf)) {
 		catch(error) {
 			alert(error);
 		}
-	}
+	};
 }
 
 if (doesNotExist(isNumber)) {
-	function isNumber(number) {
-		var pattern = /^-?\d+(?:\.\d*)?(?:e[+\-]?\d+)?$/i;
-		return pattern.test(number);
-	}
+	var isNumber = function(suspect) {
+		if(isTypeof(Number, suspect)) {
+			return true;
+		}
+		else {
+			var pattern = /^-?\d+(?:\.\d*)?(?:e[+\-]?\d+)?$/i;
+			return pattern.test(suspect);
+		}
+	};
 }
 
 if (doesNotExist(Object.prototype['method'])) {
 	Object.prototype.method = function(name, func) {
 		try {
 			if (doesNotExist(name)) {
-				throw "You must give a name to the method";
+				throw new SyntaxError("Object.method(name, func): name is undefined");
 			}
 			if (doesNotExist(func)) {
-				throw "You must define a function for the method";
+				throw new SyntaxError("Object.method(name, func): func is undefined");
 			}
 
 			if (doesNotExist(this.prototype[name])) {
@@ -51,7 +56,7 @@ if (doesNotExist(Object.prototype['method'])) {
 			}
 		}
 		catch(error) {
-			alert(error);
+			alert(error.message);
 		}
 	};
 }
@@ -63,14 +68,14 @@ JudoModule.method('run', function() {
 });
 
 var JudoApplication = function() {};
-JudoApplication.method('Module', function(name) {
+JudoApplication.method('addModule', function(name) {
 	try {
 		if (doesNotExist(name)) {
-			throw new SyntaxError("Module(): name is undefined");
+			throw new SyntaxError("JudoApplication.addModule(name): name is undefined");
 		}
 
 		if (exists(this[name])) {
-			throw new SyntaxError("Module(): " + name + " Module already declared");
+			throw new SyntaxError("JudoApplication.addModule(name): '" + name + "' already declared");
 		}
 
 		this[name] = new JudoModule();

@@ -119,15 +119,15 @@ class Judo
     unless @modules.nil? then
       modules << "\n\n"
       @modules.each do |mod|
-        modules << "#{@name}.Module('#{mod}'); \n"
+        modules << "#{@name}.addModule('#{mod}'); \n"
       end
     end
     
     filename = "#{@project_path}application/" + @judo_filename + ".js"
     
     File.open(filename, "w+") do |file|
+      file << "//-- #{Time.now.to_s}  --//\n"
       file << @compiled_core
-      file << "\n// Judo compiled --#{Time.now.to_s}"
       file << "\nvar #{@name} = new JudoApplication();"
       file << modules
     end
