@@ -180,21 +180,23 @@ class Judo
     subdir = '/' << subdir unless subdir.match(/^\//)
     @subdir = subdir
     @project_path = "#{@root}#{@subdir}"
+    Dir.mkdir "#{@project_path}" unless File.exists? "#{@project_path}"
     puts ">>> Creating #{name} project in #{@project_path}"
     
     judo_dirs = "[" << @judo_dirs.join(', ') << "]"
     
     conf_message = File.exists?("#{@project_path}judo.conf") ? 'judo.conf overwritten' : 'judo.conf created'
-    File.open("#{@project_path}judo.conf", "w+") do |conf_file|
-      conf_content = <<-CONF
+    
+    conf_file = File.new("#{@project_path}judo.conf", "w+")
+    conf_content = <<-CONF
 name: #{@name}
 output: #{@output}
 judo: #{judo_dirs}
 # The following will auto load judo library scripts in the main application file
 #autoload: ['lib/file']
-      CONF
-      conf_file.syswrite(conf_content)
-    end
+    CONF
+    conf_file << conf_content
+    conf_file.close
     
     puts conf_message
 
@@ -208,11 +210,6 @@ judo: #{judo_dirs}
     File.copy("#{root}tests/index.html", "#{project_path}tests");
     File.copy("#{root}tests/judo.test.js", "#{project_path}tests");
     File.copy("#{root}tests/judo.utilities.test.js", "#{project_path}tests");
-    
-    File.copy("#{root}tests/fixtures/global.module.js", "#{project_path}modules");
-    File.copy("#{root}tests/fixtures/test.module.js", "#{project_path}modules");
-    File.copy("#{root}tests/fixtures/test.elements.js", "#{project_path}elements");
-    File.copy("#{root}tests/fixtures/test.model.js", "#{project_path}models");    
 
     compile_core
     save_core
