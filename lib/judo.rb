@@ -7,6 +7,7 @@ require 'yaml'
 require 'jsmin'
 require 'tempfile'
 require 'sprockets'
+require 'ftools'
 
 class Judo
   attr_accessor :root,
@@ -189,6 +190,8 @@ class Judo
 name: #{@name}
 output: #{@output}
 judo: #{judo_dirs}
+# The following will auto load judo library scripts in the main application file
+#autoload: ['lib/file']
       CONF
       conf_file.syswrite(conf_content)
     end
@@ -199,6 +202,17 @@ judo: #{judo_dirs}
       puts File.directory?("#{@project_path}#{directory}") ? "#{directory} exists" : "#{directory} created"
       Dir.mkdir("#{@project_path}#{directory}") unless File.directory?("#{@project_path}#{directory}")
     end
+    
+    root = File.dirname(__FILE__) << '/'
+    
+    File.copy("#{root}tests/index.html", "#{project_path}tests");
+    File.copy("#{root}tests/judo.test.js", "#{project_path}tests");
+    File.copy("#{root}tests/judo.utilities.test.js", "#{project_path}tests");
+    
+    File.copy("#{root}tests/fixtures/global.module.js", "#{project_path}modules");
+    File.copy("#{root}tests/fixtures/test.module.js", "#{project_path}modules");
+    File.copy("#{root}tests/fixtures/test.elements.js", "#{project_path}elements");
+    File.copy("#{root}tests/fixtures/test.model.js", "#{project_path}models");    
 
     compile_core
     save_core
