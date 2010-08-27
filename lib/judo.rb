@@ -192,7 +192,7 @@ class Judo
 name: #{@name}
 output: #{@output}
 judo: #{judo_dirs}
-# The following will auto load judo library scripts in the main application file
+# The following will auto load judo library scripts in the application/<yourapp>.js file
 #autoload: ['lib/file']
     CONF
     conf_file << conf_content
