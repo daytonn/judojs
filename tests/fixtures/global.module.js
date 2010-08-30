@@ -1,1 +1,1 @@
-//= require <utilities/all>
+//= require <judo/utilities/all>
