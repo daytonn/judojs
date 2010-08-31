@@ -29,7 +29,9 @@ module Judo
       Judo::Configuration.load_config "#{@project_path}judo.conf"
       
       get_modules
+      get_judo_modules
       compile_modules
+      create_judo_application_file
     end
     
     def create_project_directories
@@ -92,14 +94,15 @@ judo_dirs: #{judo_dirs}
     end
     
     def create_judo_application_file
-      unless @modules.nil? then
+      unless @judo_modules.nil? then
         modules = "\n\n"
-        @modules.each do |mod|
-          modules << "#{@name}.addModule('#{mod}'); \n"
+        @judo_modules.each do |judo_module|
+          modules << "#{@name}.addModule('#{judo_module}'); \n"
         end
       end
-
+      
       filename = "#{@project_path}application/#{@app_filename}.js"
+      
       puts File.exists?("#{@project_path}application/#{@app_filename}.js") ? "#{@project_path}application/#{@app_filename}.js updated" : "#{@directory}application/#{@app_filename}.js created" unless @silent_mode
       File.open(filename, "w+") do |file|
         file << "//-- Judo #{Time.now.to_s}  --//\n"
@@ -113,6 +116,7 @@ judo_dirs: #{judo_dirs}
     def get_modules
       Judo::Configuration.judo_dirs.each do |folder|
         modules = Array.new
+        @modules = Array.new
         
         entries = Dir.entries "#{@project_path}#{folder}"
         entries.each do |file|
@@ -120,7 +124,7 @@ judo_dirs: #{judo_dirs}
         end
         
         @modules = @modules.concat modules unless @modules.nil?
-        modules modules if @modules.nil?
+        modules(modules) if @modules.nil?
       end
     end
     
@@ -131,13 +135,31 @@ judo_dirs: #{judo_dirs}
     
     def compile_modules
       @modules.each do |module_file|
-        module_name = get_module_name module_file
-        create_module_file module_file, module_name
+        module_filename = get_module_filename module_file
+        create_module_file module_file, module_filename
+      end
+    end
+    
+    def get_judo_modules
+      @judo_modules = Array.new
+      @modules.each do |judo_module|
+        @judo_modules.push get_module_name(judo_module)
       end
     end
     
     def get_module_name(module_name)
-      module_name = module_name.sub(/\.\w*\.js/, '')
+      split = module_name.split /[\.\-\s]/
+
+      module_name = String.new
+      split.each do |piece|
+        module_name << piece.capitalize.gsub(/\.|\-|\s/, '') unless piece.match(/module|js/)
+      end
+      
+      module_name
+    end
+    
+    def get_module_filename(module_name)
+      get_module_name(module_name).downcase
     end
     
     def create_module_file(module_file, module_name)
@@ -168,7 +190,10 @@ judo_dirs: #{judo_dirs}
                     :get_modules,
                     :compile_modules,
                     :get_module_name,
-                    :create_module_file
+                    :create_module_file,
+                    :get_module_name,
+                    :get_module_filename,
+                    :get_judo_modules
     
   end
   

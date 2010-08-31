@@ -84,6 +84,25 @@ class TC_TestProject < Test::Unit::TestCase
   
   def test_can_update_application
     Judo::Project.update
+    
+    expected_global_content = File.open("#{@path}/fixtures/global.js", "r").readlines.join
+    global_content = File.open("#{@path}/js/application/global.js", "r").readlines.join
+    
+    expected_myapplication_content = File.open("#{@path}/fixtures/myapplication_updated.js", "r").readlines.join
+    myapplication_content = File.open("#{@path}/js/application/myapplication.js").readlines
+    myapplication_content.slice! 0 
+    myapplication_content = myapplication_content.join
+    
+    expected_test_content = File.open("#{@path}/fixtures/test.js", "r").readlines.join
+    test_content = File.open("#{@path}/js/application/test.js", "r").readlines.join
+    
+    assert(File.exists?("#{@path}/js/application/myapplication.js"), 'myapplication.js exists')
+    assert(File.exists?("#{@path}/js/application/global.js"), 'global.js exists')
+    assert(File.exists?("#{@path}/js/application/test.js"), 'test.js exists')
+    
+    assert_equal expected_global_content, global_content, 'global.js content is correct'
+    assert_equal expected_test_content, test_content, 'test content.js is correct'
+    assert_equal expected_myapplication_content, myapplication_content, 'myapplication.js content is correct'
   end
   
   def teardown
@@ -105,8 +124,6 @@ class TC_TestProject < Test::Unit::TestCase
     end
 
     Dir.delete "#{@path}/js" if File.exists? "/Volumes/Storage/Development/Judo/tests/js"
-
   end
-
-
+  
 end
