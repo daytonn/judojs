@@ -1,48 +1,60 @@
 module Judo
   
-  module Project
-  
-    attr_accessor :project_path, :name, :app_filename, :modules
+  module Project    
+    def project_path(path = nil)
+      return @project_path if path.nil?
+      @project_path = path unless path.nil?
+    end
     
-    def create(name, directory, silent)
-      @name = name
-      @app_filename = @name.downcase
-      @silent_mode = silent || false
+    def directory(directory = nil)
+      return @directory if directory.nil?
+      @directory = directory unless directory.nil?
+    end
 
-      directory = directory || '/'
-      directory = directory << '/' unless directory.match(/\/$/)
-      @directory = directory.gsub(/^\//, '')
+    def create(name, directory)
+      app_filename = name.downcase
+      dir = directory || '/'
+      dir = dir += '/' unless dir =~ /\/$/
+      dir = dir.gsub(/^\//, '') unless dir =~ /^\/$/
+      dir = dir.gsub(/\/\//, '/')
       
-      @project_path = "#{Judo.root_directory}/#{@directory}"
+      config = {:name => name,
+                :app_filename => app_filename,
+                :judo_dirs => Array['modules'],                
+                :output => 'expanded',
+                :autoload => false
+      }
       
-      puts @directory.match(/^\/?\s?\/?$/) ? "Creating the #{@name} project >>" : "Creating the #{@name} project in #{@directory} >>" unless @silent_mode
+      Judo::Configuration.set_config(config)
+      
+      directory "#{dir}"
+      project_path "#{Judo.root_directory}/#{@directory}"
+      
+      puts directory.match(/^\/?\s?\/?$/) ? ">>> Creating the #{Judo::Configuration.name} project" : ">>> Creating the #{Judo::Configuration.name} project in #{@directory}"
       
       create_project_directories
       create_conf_file
       import_javascripts
       create_judo_lib_file
       create_judo_application_file
-
     end
     
     def update
-      Judo::Configuration.load_config "#{@project_path}judo.conf"
+      raise "judo.conf does not exist" unless File.exists? "#{@project_path}/judo.conf"
+      Judo::Configuration.load_config "#{@project_path}/judo.conf"
       
       get_modules
-      get_judo_modules
       compile_modules
-      create_judo_application_file
+      update_application_file
     end
-    
+
     def create_project_directories
-      puts "#{@directory} created" unless File.exists? "#{@project_path}" unless @silent_mode
+      puts "#{@directory} created" unless File.exists? "#{@project_path}"
       Dir.mkdir "#{@project_path}" unless File.exists? "#{@project_path}"
       
       manifest.each do |folder|
         Dir.mkdir "#{@project_path}#{folder}" unless File.exists? "#{@project_path}#{folder}"
       end
-      
-      Judo::Configuration.judo_dirs.each
     end
     
     def manifest
@@ -55,22 +67,18 @@ module Judo
                         'templates',
                         'tests']
     end
-    
-    def create_conf_file
-      judo_dirs = "[" << Judo::Configuration.judo_dirs.join(', ') << "]"
 
+    def create_conf_file
       conf_file = File.new("#{@project_path}judo.conf", "w+")
       conf_content = <<-CONF
-name: #{@name}
+name: #{Judo::Configuration.name}
 output: #{Judo::Configuration.output}
-judo_dirs: #{judo_dirs}
-# The following will auto load judo library scripts in the application/<yourapp>.js file
 #autoload: ['lib/file']
       CONF
       conf_file << conf_content
       conf_file.close
       
-      puts "#{@directory}judo.conf created" unless @silent_mode
+      puts "#{@directory}judo.conf created"
     end
     
     def import_javascripts
@@ -90,44 +98,62 @@ judo_dirs: #{judo_dirs}
       @judo_lib_file = judo_lib_secretary.concatenation
       @judo_lib_file.save_to "#{@project_path}lib/judo.js"
       
-      puts "#{@directory}lib/judo.js created" unless @silent_mode
+      puts "#{@directory}lib/judo.js created"
     end
     
-    def create_judo_application_file
-      unless @judo_modules.nil? then
-        modules = "\n\n"
-        @judo_modules.each do |judo_module|
-          modules << "#{@name}.addModule('#{judo_module}'); \n"
-        end
-      end
+    def create_judo_application_file      
+      filename = "#{@project_path}application/#{Judo::Configuration.app_filename}.js"
       
-      filename = "#{@project_path}application/#{@app_filename}.js"
-      
-      puts File.exists?("#{@project_path}application/#{@app_filename}.js") ? "#{@project_path}application/#{@app_filename}.js updated" : "#{@directory}application/#{@app_filename}.js created" unless @silent_mode
+      puts File.exists?("#{@project_path}application/#{Judo::Configuration.app_filename}.js") ? "application/#{Judo::Configuration.app_filename}.js updated" : "application/#{Judo::Configuration.app_filename}.js created"
       File.open(filename, "w+") do |file|
         file << "//-- Judo #{Time.now.to_s}  --//\n"
         file << @judo_lib_file
-        file << "\nvar #{@name} = new JudoApplication();"
-        file << modules
+        file << "\nvar #{Judo::Configuration.name} = new JudoApplication();"
       end
       
     end
     
-    def get_modules
-      Judo::Configuration.judo_dirs.each do |folder|
-        modules = Array.new
-        @modules = Array.new
-        
-        entries = Dir.entries "#{@project_path}#{folder}"
-        entries.each do |file|
-          modules.push file unless file.match(/^\./)
+    def update_application_file
+      message = File.exists?("#{@project_path}application/#{Judo::Configuration.app_filename}.js") ? "application/#{Judo::Configuration.app_filename}.js updated" : "application/#{Judo::Configuration.app_filename}.js created"      
+      
+      content = String.new 
+      unless Judo::Configuration.autoload.nil? then
+        Judo::Configuration.autoload.each do |file|
+          content << "//= require #{file}\n\n" if file =~ /\<|\>/
+          content << "//= require \"" + file + "\"\n\n" unless file =~ /\<|\>/
         end
-        
-        @modules = @modules.concat modules unless @modules.nil?
-        modules(modules) if @modules.nil?
       end
+      content << "/* Judo #{Time.now.to_s} */\n"
+      content << "//= require \"../lib/judo.js\"\n\n"
+      content << "\nvar #{Judo::Configuration.name} = new JudoApplication();"
+      
+      filename = "#{@project_path}application/#{Judo::Configuration.app_filename}.js"
+      File.open(filename, "w+") do |file|
+        file << content
+      end
+      
+      judo_lib_secretary = Sprockets::Secretary.new(
+        :root         => "#{Judo.base_directory}",
+        :asset_root   => "#{@project_path}",
+        :load_path    => ["repository"],
+        :source_files => ["#{filename}"]
+      )
+      application_file = judo_lib_secretary.concatenation
+      judo_lib_secretary.install_assets
+      application_file.save_to "#{filename}"
+      
+      puts message
     end
     
+    def get_modules
+      @modules = Array.new
+      
+      entries = Dir.entries "#{@project_path}modules"
+      entries.each do |file|
+        @modules.push file unless file.match(/^\./)
+      end
+    end
+
     def modules(modules = nil)
       @modules if modules.nil?
       @modules = modules unless modules.nil?
@@ -140,15 +166,8 @@ judo_dirs: #{judo_dirs}
       end
     end
     
-    def get_judo_modules
-      @judo_modules = Array.new
-      @modules.each do |judo_module|
-        @judo_modules.push get_module_name(judo_module)
-      end
-    end
-    
     def get_module_name(module_name)
-      split = module_name.split /[\.\-\s]/
+      split = module_name.split(/[\.\-\s]/)
 
       module_name = String.new
       split.each do |piece|
@@ -173,9 +192,11 @@ judo_dirs: #{judo_dirs}
         )
 
         module_file = judo_lib_secretary.concatenation
+        message = File.exists?("#{@project_path}application/#{module_name}.js") ? "application/#{module_name}.js updated" : "application/#{module_name}.js created"
         module_file.save_to "#{@project_path}application/#{module_name}.js"
+        module_name.install_assets
 
-        puts "#{@directory}application/#{module_name}.js created" unless @silent_mode
+        puts message
     end
     
     module_function :create,
@@ -185,6 +206,7 @@ judo_dirs: #{judo_dirs}
                     :import_javascripts,
                     :create_judo_lib_file,
                     :create_judo_application_file,
+                    :update_application_file,
                     :modules,
                     :update,
                     :get_modules,
@@ -193,8 +215,8 @@ judo_dirs: #{judo_dirs}
                     :create_module_file,
                     :get_module_name,
                     :get_module_filename,
-                    :get_judo_modules
-    
+                    :project_path,
+                    :directory
   end
   
 end

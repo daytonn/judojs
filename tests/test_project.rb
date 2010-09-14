@@ -4,7 +4,7 @@ require '../lib/judo.rb'
 class TC_TestProject < Test::Unit::TestCase
   
   def setup
-    Judo::Project.create('MyApplication', 'js', true)
+    Judo::Project.create('MyApplication', 'js')
     
     @path = File.dirname(__FILE__)
     File.copy("#{@path}/fixtures/global.module.js", "#{@path}/js/modules")
@@ -23,7 +23,6 @@ class TC_TestProject < Test::Unit::TestCase
     Judo::Configuration.load_defaults
     assert_equal(nil , Judo::Configuration.name, 'Judo::Configuration.name] is set correctly')
     assert_equal('expanded' , Judo::Configuration.output, 'Judo::Configuration.output is set correctly')
-    assert_equal(['modules'] , Judo::Configuration.judo_dirs, 'Judo::Configuration.judo_dirs is set correctly')
   end
   
   def test_project_manifest
@@ -46,7 +45,7 @@ class TC_TestProject < Test::Unit::TestCase
     
     File.open("/Volumes/Storage/Development/Judo/tests/js/judo.conf", "r") do |conf_file|
       conf_content = conf_file.sysread File.size? "/Volumes/Storage/Development/Judo/tests/js/judo.conf"
-      expected_content = "name: MyApplication\noutput: expanded\njudo_dirs: [modules]\n# The following will auto load judo library scripts in the application/<yourapp>.js file\n#autoload: ['lib/file']\n"
+      expected_content = "name: MyApplication\noutput: expanded\n#autoload: ['lib/file']\n"
       assert_equal expected_content, conf_content
     end
   end
@@ -107,6 +106,7 @@ class TC_TestProject < Test::Unit::TestCase
   
   def teardown
     File.delete "#{@path}/js/judo.conf" if File.exists? "#{@path}/js/judo.conf"
+    File.delete "#{@path}/js/.judo_cache" if File.exists? "#{@path}/js/.judo_cache"
     File.delete "#{@path}/js/tests/index.html" if File.exists? "#{@path}/js/tests/index.html"
     File.delete "#{@path}/js/tests/judo.test.js" if File.exists? "#{@path}/js/tests/judo.test.js"
     File.delete "#{@path}/js/tests/judo.utilities.test.js" if File.exists? "#{@path}/js/tests/judo.utilities.test.js"
@@ -125,5 +125,5 @@ class TC_TestProject < Test::Unit::TestCase
 
     Dir.delete "#{@path}/js" if File.exists? "/Volumes/Storage/Development/Judo/tests/js"
   end
-  
+
 end

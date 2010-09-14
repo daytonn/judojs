@@ -46,6 +46,36 @@ test("can determine a number", function() {
 	equals(isNumber('Hello'), false, 'Hello is not a number');
 });
 
+module("extend tests");
+
+test("can add a method to the prototype", function() {
+	ok(exists(Object.prototype.method), "Object.prototype.method is defined");
+	
+	String.method('test_method', function() {
+		return 'This is a test';
+	});
+	
+	equals('Hello'.test_method(), 'This is a test', 'can create a prototype method with method');
+});
+
+test("can clone something", function() {
+	var object = {
+		hello: 'world',
+		simple: 'object'
+	};
+
+	var array = [1, 2, 3, 4, 5, 6, 7, 8, 9, object, 'one', 'two', 'three', 'four', 'five'];
+	
+	var clone_object = object.clone();
+	var clone_array = array.clone();
+
+	ok(object !== clone_object, 'cloned object is not a reference');
+	ok(array !== clone_array, 'cloned array is not a reference');
+	
+	same(object, clone_object, "object successfully cloned");
+	same(array, clone_array, "array successfully cloned");
+});
+
 module("Judo application tests");
 
 test("can create a judo application object", function() {
@@ -73,7 +103,7 @@ test("can add actions to module", function() {
 	
 	MyApp.Test.actions = function() {
 		ok(true, 'MyApp.Test.actions ran');
-	}
+	};
 	
 	MyApp.Test.run();
 });

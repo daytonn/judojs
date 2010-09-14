@@ -1,3 +1,45 @@
+MyApplication.addModule('Global');
+
+Array.method('is_empty', function() {
+	return (this.length < 1) ? true : false;
+});
+
+Array.method('not_empty', function() {
+	return (this.length > 0) ? true : false;
+});
+
+Array.method('each', function(callback) {
+	try {
+		if(doesNotExist(callback)) {
+			throw new SyntaxError("Array.each(callback): callback is undefined");
+		}
+
+		for (var i = 0; i < this.length; i++) {
+			var args = [this[i], i];
+			callback.apply(this, args);
+		}
+	}
+	catch(error) {
+		document.write(error.message);
+	}
+});
+
+Array.method('contains', function(suspect) {
+	var matches = [];
+	this.each(function(value, index) {
+		if(value === suspect) {
+			matches.push(index);
+		}
+	});
+
+	return matches.not_empty() ? matches : false;
+});
+
+Array.method('shuffle', function() {
+	var clone = this.clone();
+	for(var j, x, i = clone.length; i; j = parseInt(Math.random() * i), x = clone[--i], clone[i] = clone[j], clone[j] = x);
+	return clone;
+});
 String.method('is_empty', function() {
 	return (this == '') ? true : false;
 });
@@ -64,37 +106,7 @@ String.method('single_space', function() {
 String.method('compress', function() {
 	return this.replace(/\s+/g, '');
 });
-Array.method('is_empty', function() {
-	return (this.length < 1) ? true : false;
-});
 
-Array.method('not_empty', function() {
-	return (this.length > 0) ? true : false;
-});
-
-Array.method('each', function(callback) {
-	try {
-		if(doesNotExist(callback)) {
-			throw new SyntaxError("Array.each(callback): callback is undefined");
-		}
-
-		for (var i = 0; i < this.length; i++) {
-			var args = [this[i], i];
-			callback.apply(this, args);
-		}
-	}
-	catch(error) {
-		document.write(error.message);
-	}
-});
-
-Array.method('contains', function(suspect) {
-	var matches = [];
-	this.each(function(value, index) {
-		if(value === suspect) {
-			matches.push(index);
-		}
-	});
-
-	return matches.not_empty() ? matches : false;
-});
+String.method('shuffle', function() {
+	return this.split('').shuffle().join('');
+})

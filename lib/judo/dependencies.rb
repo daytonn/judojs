@@ -4,6 +4,7 @@ begin
   require 'tempfile'
   require 'sprockets'
   require 'ftools'
+  require 'fssm'
 rescue LoadError
   require 'rubygems'
   require 'yaml'
@@ -11,4 +12,5 @@ rescue LoadError
   require 'tempfile'
   require 'sprockets'
   require 'ftools'
+  require 'fssm'
 end

@@ -1,4 +1,4 @@
-//= require "env"
+//= require "extend"
 
 var JudoModule = function() {};
 JudoModule.method('actions', function() {});

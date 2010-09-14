@@ -2,6 +2,9 @@ module Judo
 end
 
 module Judo
+  def version
+    '0.9.1'
+  end
   
   def base_directory
     File.expand_path(File.join(File.dirname(__FILE__), '..'))

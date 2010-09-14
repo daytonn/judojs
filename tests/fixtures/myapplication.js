@@ -1,4 +1,4 @@
-//-- Comment Line  --//
+//-- Judo Sat Sep 11 00:15:07 -0500 2010  --//
 if (exists === undefined) {
 	var exists = function(variable) {
 		return (variable === undefined) ? false : true;
@@ -69,6 +69,28 @@ if (doesNotExist(Object.prototype['method'])) {
 			document.write(error.message);
 		}
 	};
+}
+
+if (doesNotExist(Object.prototype['clone'])) {
+	Object.method('clone', function() {
+		if (typeof this !== 'object' || this === null) {
+			return this;
+		}
+
+        if (this instanceof Node || this instanceof NodeList || this instanceof NamedNodeMap) {
+            die('You cannot clone a Node, Nodelist or NamedNodeMap');
+        }
+
+		var clone = isTypeof(Array, this) ? [] : {};
+
+		for(var prop in this) {
+			if(this.hasOwnProperty(prop)) {
+				clone[prop] = this[prop];
+			}
+		}
+
+		return clone;
+	});
 }
 
 var JudoModule = function() {};
