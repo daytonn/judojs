@@ -117,4 +117,5 @@ JudoApplication.method('addModule', function(name) {
 	}
 });
 
+
 var MyApplication = new JudoApplication();

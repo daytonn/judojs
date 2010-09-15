@@ -41,11 +41,12 @@ module Judo
     
     def update
       raise "judo.conf does not exist" unless File.exists? "#{@project_path}/judo.conf"
-      Judo::Configuration.load_config "#{@project_path}/judo.conf"
+      Judo::Configuration.load_config
       
       get_modules
       compile_modules
       update_application_file
+      compress_application if Judo::Configuration.output == 'compressed'
     end
 
     def create_project_directories
@@ -71,13 +72,13 @@ module Judo
     def create_conf_file
       conf_file = File.new("#{@project_path}judo.conf", "w+")
       conf_content = <<-CONF
+project_path: #{@project_path}
 name: #{Judo::Configuration.name}
 output: #{Judo::Configuration.output}
 #autoload: ['lib/file']
       CONF
       conf_file << conf_content
       conf_file.close
-      
       puts "#{@directory}judo.conf created"
     end
     
@@ -116,13 +117,7 @@ output: #{Judo::Configuration.output}
     def update_application_file
       message = File.exists?("#{@project_path}application/#{Judo::Configuration.app_filename}.js") ? "application/#{Judo::Configuration.app_filename}.js updated" : "application/#{Judo::Configuration.app_filename}.js created"      
       
-      content = String.new 
-      unless Judo::Configuration.autoload.nil? then
-        Judo::Configuration.autoload.each do |file|
-          content << "//= require #{file}\n\n" if file =~ /\<|\>/
-          content << "//= require \"" + file + "\"\n\n" unless file =~ /\<|\>/
-        end
-      end
+      content = String.new
       content << "/* Judo #{Time.now.to_s} */\n"
       content << "//= require \"../lib/judo.js\"\n\n"
       content << "\nvar #{Judo::Configuration.name} = new JudoApplication();"
@@ -166,6 +161,21 @@ output: #{Judo::Configuration.output}
       end
     end
     
+    def compress_application
+      application = Judo::Configuration.project_path + 'application'
+      modules = Dir.entries(application)
+      modules.reject! { |file| file =~ /^\./ }
+
+      modules.each do |module_file|
+        full_path = application + "/#{module_file}"
+        uncompressed = File.open(full_path, "r").readlines.join('')
+        File.open(full_path, "w+") do |module_file|
+          module_file << JSMin.minify(uncompressed)
+        end
+      end
+
+    end
+    
     def get_module_name(module_name)
       split = module_name.split(/[\.\-\s]/)
 
@@ -194,7 +204,7 @@ output: #{Judo::Configuration.output}
         module_file = judo_lib_secretary.concatenation
         message = File.exists?("#{@project_path}application/#{module_name}.js") ? "application/#{module_name}.js updated" : "application/#{module_name}.js created"
         module_file.save_to "#{@project_path}application/#{module_name}.js"
-        module_name.install_assets
+        judo_lib_secretary.install_assets
 
         puts message
     end
@@ -216,7 +226,8 @@ output: #{Judo::Configuration.output}
                     :get_module_name,
                     :get_module_filename,
                     :project_path,
-                    :directory
+                    :directory,
+                    :compress_application
   end
   
 end

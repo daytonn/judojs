@@ -45,7 +45,7 @@ class TC_TestProject < Test::Unit::TestCase
     
     File.open("/Volumes/Storage/Development/Judo/tests/js/judo.conf", "r") do |conf_file|
       conf_content = conf_file.sysread File.size? "/Volumes/Storage/Development/Judo/tests/js/judo.conf"
-      expected_content = "name: MyApplication\noutput: expanded\n#autoload: ['lib/file']\n"
+      expected_content = "project_path: /Volumes/Storage/Development/Judo/tests/js/\nname: MyApplication\noutput: expanded\n#autoload: ['lib/file']\n"
       assert_equal expected_content, conf_content
     end
   end
@@ -82,6 +82,7 @@ class TC_TestProject < Test::Unit::TestCase
   end
   
   def test_can_update_application
+    Judo::Configuration.config_path "#{@path}/js/"
     Judo::Project.update
     
     expected_global_content = File.open("#{@path}/fixtures/global.js", "r").readlines.join
@@ -91,7 +92,7 @@ class TC_TestProject < Test::Unit::TestCase
     myapplication_content = File.open("#{@path}/js/application/myapplication.js").readlines
     myapplication_content.slice! 0 
     myapplication_content = myapplication_content.join
-    
+        
     expected_test_content = File.open("#{@path}/fixtures/test.js", "r").readlines.join
     test_content = File.open("#{@path}/js/application/test.js", "r").readlines.join
     

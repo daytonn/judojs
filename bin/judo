@@ -21,7 +21,7 @@ module Judo
       
       raise "judo.conf was not located in #{watch_root}" unless File.exists? "#{watch_root}/judo.conf"
       puts ">>> Judo is watching for changes. Press Ctrl-C to stop."
-      Judo::Project.project_path "#{watch_root}/"
+      Judo::Configuration.config_path "#{watch_root}/"
       Judo::Project.update
       
       FSSM.monitor do

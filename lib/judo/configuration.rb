@@ -1,6 +1,11 @@
 module Judo
     module Configuration
       
+      def project_path(path = nil)
+        return @project_path if path.nil?
+        @project_path = path unless path.nil?
+      end
+      
       def name(name = nil)
         return @name if name.nil?
         @name = name unless name.nil?
@@ -25,15 +30,21 @@ module Judo
         return @autoload if autoload.nil?
         @autoload = autoload unless autoload.nil?
       end
+      
+      def config_path(path = nil)
+        return @config_path if path.nil?
+        @config_path = path unless path.nil?
+      end
 
-      def load_config(config_file)
+      def load_config
         begin
-          raise IOError, "#{config_file} does not exist", caller unless File.exists? "#{config_file}"
-          size = File.size? "#{config_file}"
-          File.open("#{config_file}", "r") do |file|
+          raise IOError, "#{@config_path}judo.conf does not exist", caller unless File.exists? "#{@config_path}judo.conf"
+          size = File.size? "#{@config_path}judo.conf"
+          File.open("#{@config_path}judo.conf", "r") do |file|
             config_yaml = file.sysread(size)
             config = YAML::load config_yaml
             
+            project_path(config['project_path'])
             name(config['name'])
             app_filename(config['name'].downcase)
             output(config['output'])
@@ -58,11 +69,14 @@ module Judo
         app_filename(config[:app_filename])
         directory('/')
         output(config[:output])
+        auto = config[:autoload] || nil
         autoload(config[:autoload])
       end
 
-      module_function :name,
+      module_function :project_path,
+                      :name,
                       :app_filename,
+                      :config_path,
                       :directory,
                       :output,
                       :autoload,
