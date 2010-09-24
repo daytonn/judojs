@@ -40,6 +40,7 @@ module Judo
     end
     
     def update
+      Judo::Configuration.config_path "#{Dir.getwd}/"
       Judo::Configuration.load_config
       
       get_modules
@@ -124,6 +125,11 @@ output: #{Judo::Configuration.output}
       filename = "#{Judo::Configuration.project_path}application/#{Judo::Configuration.app_filename}.js"
       File.open(filename, "w+") do |file|
         file << content
+        Judo::Configuration.autoload.each do |auto_file|
+          file << "\n\n/*---------- Judo autoload #{auto_file} ----------*/"
+          file << "\n//= require #{auto_file}\n" if auto_file.match(/^\<.+\>$/)
+          file << "\n//= require \"#{auto_file}\"\n" if auto_file.match(/^[^\<].+|[^\>]$/)
+        end
       end
       
       judo_lib_secretary = Sprockets::Secretary.new(
@@ -132,6 +138,7 @@ output: #{Judo::Configuration.output}
         :load_path    => ["repository"],
         :source_files => ["#{filename}"]
       )
+      
       application_file = judo_lib_secretary.concatenation
       judo_lib_secretary.install_assets
       application_file.save_to "#{filename}"
