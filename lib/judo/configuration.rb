@@ -1,87 +1,73 @@
 module Judo
-    module Configuration
+    class Configuration
       
-      def project_path(path = nil)
-        return @project_path if path.nil?
-        @project_path = path unless path.nil?
-      end
-      
-      def name(name = nil)
-        return @name if name.nil?
-        @name = name unless name.nil?
-      end
-      
-      def app_filename(app_filename = nil)
-        return @app_filename if app_filename.nil?
-        @app_filename = app_filename unless app_filename.nil?
-      end
-      
-      def directory(directory = nil)
-        return @directory if directory.nil?
-        @directory = directory unless directory.nil?
-      end
-
-      def output(output = nil)
-        return @output if output.nil?
-        @output = output unless output.nil?
+      attr_reader :project_path,
+                  :name,
+                  :app_filename,
+                  :directory,
+                  :output,
+                  :autoload,
+                  :config_path
+                  
+      def initialize(project_path, name = 'JudoApplication')
+        @project_path = project_path
+        @name = name
+        @output = 'expanded'
+        @autoload = Array.new                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
       end
       
-      def autoload(autoload = nil)
-        return @autoload if autoload.nil?
-        @autoload = autoload unless autoload.nil?
+      def create
+        conf_exists = File.exists? "#{@project_path}judo.conf"
+        
+        if conf_exists
+          autoload = @autoload.empty? ? 'autoload: []' : 'autoload: ["' << @autoload.join('", "') << '"]'
+        else
+          autoload = @autoload.empty? ? '#autoload: ["<judo/utilities/all>", "../lib/local_lib_file"]' : @autoload.join('", "')
+        end
+        
+        conf_content = <<-CONF
+project_path: #{@project_path}
+name: #{@name}
+output: #{@output}
+#{autoload}
+        CONF
+        
+        File.open("#{@project_path}judo.conf", "w+") do |conf_file|
+          conf_file << conf_content
+        end
+        
+        message = conf_exists ? "judo.conf updated" : "judo.conf created"
+        puts message
       end
       
-      def config_path(path = nil)
-        return @config_path if path.nil?
-        @config_path = path unless path.nil?
-      end
-
-      def load_config
+      def read
         begin
-          raise IOError, "#{@config_path}judo.conf does not exist", caller unless File.exists? "#{@config_path}judo.conf"
-          size = File.size? "#{@config_path}judo.conf"
-          File.open("#{@config_path}judo.conf", "r") do |file|
-            config_yaml = file.sysread(size)
-            config = YAML::load config_yaml
-            
-            project_path(config['project_path'])
-            name(config['name'])
-            app_filename(config['name'].downcase)
-            output(config['output'])
-            autoload(config['autoload']) unless config['autoload'].nil?
-          end
+          raise IOError, "#{@project_path}judo.conf does not exist", caller unless File.exists? "#{@project_path}judo.conf"
+          config_yaml = File.open("#{@project_path}judo.conf", "r").readlines.join('')
+          config = YAML::load config_yaml
+          
+          @project_path = config['project_path']
+          @name = config['name']
+          @app_filename = config['name'].downcase
+          @output = config['output']
+          @autoload = config['autoload'] || Array.new
         rescue RuntimeError => e
           puts e.message
           puts e.backtrace.inspect
         end
       end
       
-      def load_defaults
-        @name = nil
-        @app_filename = nil
-        @directory = '/'
-        @output = 'expanded'
-        @autoload = nil
+      def update
+        create
       end
       
       def set_config(config)
-        name(config[:name])
-        app_filename(config[:app_filename])
-        directory('/')
-        output(config[:output])
-        auto = config[:autoload] || nil
-        autoload(config[:autoload])
+        @name = config[:name] unless config[:name].nil?
+        @app_filename = config[:app_filename] unless config[:app_filename].nil? 
+        @directory = '/'
+        @output = config[:output] unless config[:output].nil?
+        @autoload = config[:autoload] || nil
       end
-
-      module_function :project_path,
-                      :name,
-                      :app_filename,
-                      :config_path,
-                      :directory,
-                      :output,
-                      :autoload,
-                      :load_config,
-                      :load_defaults,
-                      :set_config
+      
     end
 end

@@ -18,12 +18,14 @@ module Judo
     Dir.getwd
   end
   
-  module_function :base_directory, :lib_directory, :root_directory
+  def repository_root
+    base_directory + '/repository/'
+  end
+  
+  module_function :base_directory, :lib_directory, :root_directory, :repository_root
 end
 
 
-%w(dependencies configuration project).each do |lib|
+%w(dependencies configuration helpers project command jpm).each do |lib|
   require "#{Judo.lib_directory}/judo/#{lib}"
 end
-
-Judo::Configuration.load_defaults

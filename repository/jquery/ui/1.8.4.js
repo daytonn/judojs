@@ -1,4 +1,4 @@
-//= provide "assets"
+//= provide "assets/1.8.4"
 
 /*!
  * jQuery UI 1.8.4

@@ -1,4 +1,4 @@
-//-- Judo Sat Sep 11 00:15:07 -0500 2010  --//
+//-- Judo Sat Sep 25 18:43:09 -0500 2010  --//
 if (exists === undefined) {
 	var exists = function(variable) {
 		return (variable === undefined) ? false : true;
