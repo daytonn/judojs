@@ -14,12 +14,12 @@ module Judo
 
           update do |base, relative|
             puts "change detected in #{relative}"
-            Judo::Project.update
+            project.update
           end
 
           create do |base, relative|
             puts "#{relative} created"
-            Judo::Project.update
+            project.update
           end
         end
         
@@ -28,12 +28,12 @@ module Judo
 
           update do |base, relative|
             puts "change detected in #{relative}"
-            Judo::Project.update
+            project.update
           end
 
           create do |base, relative|
             puts "#{relative} created"
-            Judo::Project.update
+            project.update
           end
         end
         
@@ -42,12 +42,26 @@ module Judo
 
           update do |base, relative|
             puts "change detected in #{relative}"
-            Judo::Project.update
+            project.update
           end
 
           create do |base, relative|
             puts "#{relative} created"
-            Judo::Project.update
+            project.update
+          end
+        end
+
+        path "#{project_path}" do
+          glob "**/*.conf"
+
+          update do |base, relative|
+            puts "change detected in #{relative}"
+            project.update
+          end
+
+          create do |base, relative|
+            puts "#{relative} created"
+            project.update
           end
         end
         
