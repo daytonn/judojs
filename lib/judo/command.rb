@@ -62,10 +62,10 @@ module Judo
     end
     
     def compile
-      project_path = Dir.getwd
+      project_path = Dir.getwd << '/'
       raise "judo.conf was not located in #{project_path}" unless File.exists? "#{project_path}/judo.conf"
-      project = Judo::Project.init_with_config "#{project_path}/judo.conf"
-      project_path.update
+      project = Judo::Project.init_with_config(project_path)
+      project.update
     end
     
     def import(package)
