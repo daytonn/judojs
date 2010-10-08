@@ -1,7 +1,7 @@
 //= require "existence"
 
-if (doesNotExist(Object.prototype['method'])) {
-	Object.prototype.method = function(name, func) {
+if (doesNotExist(Function.prototype['method'])) {
+	Function.prototype.method = function(name, func) {
 		try {
 			if (doesNotExist(name)) {
 				throw new SyntaxError("Object.method(name, func): name is undefined");
