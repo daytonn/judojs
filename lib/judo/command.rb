@@ -7,7 +7,7 @@ module Judo
       puts ">>> Judo is watching for changes. Press Ctrl-C to stop."
       project = Judo::Project.init_with_config(project_path)
       project.update
-      
+	  
       FSSM.monitor do
         path "#{project_path}elements" do
           glob "**/*.js"

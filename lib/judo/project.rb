@@ -145,7 +145,7 @@ module Judo
       content = String.new
       content << "/* Judo #{Time.now.to_s} */\n"
       content << "//= require \"../lib/judo.js\"\n\n"
-      content << "\nvar #{Judo::Configuration.name} = new JudoApplication();"
+      content << "\nvar #{@config.name} = new JudoApplication();"
       
       filename = "#{@project_path}application/#{@app_filename}.js"
       File.open(filename, "w+") do |file|
