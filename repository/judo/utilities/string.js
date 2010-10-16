@@ -64,7 +64,3 @@ String.method('single_space', function() {
 String.method('compress', function() {
 	return this.replace(/\s+/g, '');
 });
-
-String.method('shuffle', function() {
-	return this.split('').shuffle().join('');
-})
