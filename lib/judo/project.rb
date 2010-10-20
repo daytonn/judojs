@@ -67,12 +67,11 @@ module Judo
     def create_judo_lib_file
       judo_lib_secretary = Sprockets::Secretary.new(
         :root         => "#{Judo.base_directory}",
-        :asset_root   => "#{@project_path}",
+        :asset_root   => "#{@config.asset_root}",
         :load_path    => ["repository"],
         :source_files => ["repository/judo/core/judo.js"]
       )
       
-      judo_lib = judo_lib_secretary.concatenation
       judo_lib.save_to "#{@project_path}lib/judo.js"
       
       puts "lib/judo.js created"
@@ -81,7 +80,7 @@ module Judo
     def create_utility_lib_file
       utility_lib_secretary = Sprockets::Secretary.new(
         :root         => "#{Judo.base_directory}",
-        :asset_root   => "#{@project_path}",
+        :asset_root   => "#{@config.asset_root}",
         :load_path    => ["repository"],
         :source_files => ["repository/judo/utilities/all.js"]
       )
@@ -126,7 +125,7 @@ module Judo
         
         judo_lib_secretary = Sprockets::Secretary.new(
           :root         => "#{Judo.base_directory}",
-          :asset_root   => "#{@project_path}",
+          :asset_root   => "#{@config.asset_root}",
           :load_path    => ["repository"],
           :source_files => ["#{module_src}"]
         )
@@ -159,7 +158,7 @@ module Judo
       
       judo_lib_secretary = Sprockets::Secretary.new(
         :root         => "#{Judo.base_directory}",
-        :asset_root   => "",
+        :asset_root   => "#{@config.asset_root}",
         :load_path    => ["repository"],
         :source_files => ["#{filename}"]
       )

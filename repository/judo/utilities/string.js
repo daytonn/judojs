@@ -35,7 +35,7 @@ String.method('each', function(callback) {
 		}
 	}
 	catch(error) {
-		document.write(error.message);
+		alert(error.message);
 	}
 });
 

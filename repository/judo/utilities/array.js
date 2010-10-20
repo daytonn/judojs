@@ -18,7 +18,7 @@ Array.method('each', function(callback) {
 		}
 	}
 	catch(error) {
-		document.write(error.message);
+		alert(error.message);
 	}
 });
 
@@ -31,10 +31,4 @@ Array.method('contains', function(suspect) {
 	});
 	
 	return matches.not_empty() ? matches : false;
-});
-
-Array.method('shuffle', function() {
-	var clone = this.clone();
-	for(var j, x, i = clone.length; i; j = parseInt(Math.random() * i), x = clone[--i], clone[i] = clone[j], clone[j] = x);
-	return clone;
 });

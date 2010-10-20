@@ -40,15 +40,6 @@ if (doesNotExist(isNumber)) {
 	};
 }
 
-if (doesNotExist(die)) {
-	var die = function(last_words) {
-		if(doesNotExist(last_words)) {
-			lastwords = ''
-		}
-		document.write(lastwords)
-	};
-}
-
 if (doesNotExist(Object.prototype['method'])) {
 	Object.prototype.method = function(name, func) {
 		try {

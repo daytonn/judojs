@@ -16,29 +16,7 @@ if (doesNotExist(Function.prototype['method'])) {
 			}
 		}
 		catch(error) {
-			document.write(error.message);
+			alert(error.message);
 		}
 	};
-}
-
-if (doesNotExist(Object.prototype['clone'])) {
-	Object.method('clone', function() {
-		if (typeof this !== 'object' || this === null) {
-			return this;
-		}
-		
-        if (this instanceof Node || this instanceof NodeList || this instanceof NamedNodeMap) {
-            die('You cannot clone a Node, Nodelist or NamedNodeMap');
-        }
-		
-		var clone = isTypeof(Array, this) ? [] : {};
-		
-		for(var prop in this) {
-			if(this.hasOwnProperty(prop)) {
-				clone[prop] = this[prop];
-			}
-		}
-		
-		return clone;
-	});
 }

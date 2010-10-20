@@ -21,6 +21,6 @@ JudoApplication.method('addModule', function(name) {
 		this[name] = new JudoModule();
 	}
 	catch(error) {
-		document.write(error.message);
+		alert(error.message);
 	}
 });

@@ -7,10 +7,12 @@ module Judo
                   :directory,
                   :output,
                   :autoload,
-                  :config_path
+                  :config_path,
+                  :asset_root
                   
       def initialize(project_path, name = 'JudoApplication')
         @project_path = project_path
+        @asset_root = project_path
         @name = name
         @output = 'expanded'
         @autoload = Array.new                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
@@ -22,11 +24,12 @@ module Judo
         if conf_exists
           autoload = @autoload.empty? ? 'autoload: []' : 'autoload: ["' << @autoload.join('", "') << '"]'
         else
-          autoload = @autoload.empty? ? '#autoload: ["<judo/utilities/all>", "../lib/local_lib_file"]' : @autoload.join('", "')
+          autoload = @autoload.empty? ? '#autoload: ["<judo/utilities/all>", "../plugins/local_lib_file"]' : @autoload.join('", "')
         end
         
         conf_content = <<-CONF
 project_path: #{@project_path}
+asset_root: #{@project_path}
 name: #{@name}
 output: #{@output}
 #{autoload}
@@ -47,6 +50,7 @@ output: #{@output}
           config = YAML::load config_yaml
           
           @project_path = config['project_path']
+          @asset_root = config['asset_root']
           @name = config['name']
           @app_filename = config['name'].downcase
           @output = config['output']

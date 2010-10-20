@@ -23,7 +23,7 @@ if (doesNotExist(isTypeof)) {
 			return (variable.constructor == type) ? true : false;
 		}
 		catch(error) {
-			document.write(error.message);
+			alert(error.message);
 		}
 	};
 }
@@ -37,14 +37,5 @@ if (doesNotExist(isNumber)) {
 			var pattern = /^-?\d+(?:\.\d*)?(?:e[+\-]?\d+)?$/i;
 			return pattern.test(suspect);	
 		}
-	};
-}
-
-if (doesNotExist(die)) {
-	var die = function(last_words) {
-		if(doesNotExist(last_words)) {
-			lastwords = ''
-		}
-		document.write(lastwords)
 	};
 }
