@@ -72,6 +72,7 @@ module Judo
         :source_files => ["repository/judo/core/judo.js"]
       )
       
+      judo_lib = judo_lib_secretary.concatenation
       judo_lib.save_to "#{@project_path}lib/judo.js"
       
       puts "lib/judo.js created"
