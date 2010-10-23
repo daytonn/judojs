@@ -53,6 +53,7 @@ module Judo
       compile_modules
       update_application_file
       compress_application if @config.output == 'compressed'
+      puts ">>> application updated"
     end
 
     def create_project_structure
@@ -94,7 +95,7 @@ module Judo
     def create_judo_application_file      
       filename = "#{@project_path}application/#{@app_filename}.js"
       
-      puts File.exists?("#{@project_path}application/#{@app_filename}.js") ? "application/#{@app_filename}.js updated" : "application/#{@app_filename}.js created"
+      #puts File.exists?("#{@project_path}application/#{@app_filename}.js") ? "application/#{@app_filename}.js updated" : "application/#{@app_filename}.js created"
       File.open(filename, "w+") do |file|
         file << "//-- Judo #{Time.now.to_s}  --//\n"
         file << File.open("#{@project_path}lib/judo.js", 'r').readlines.join('')
@@ -135,7 +136,7 @@ module Judo
         module_file.save_to "#{@project_path}application/#{module_name}.js"
         judo_lib_secretary.install_assets
 
-        puts message
+        #puts message
     end
     
     def update_application_file
@@ -167,7 +168,7 @@ module Judo
       judo_lib_secretary.install_assets
       application_file.save_to "#{filename}"
       
-      puts message
+      #puts message
     end
     
     def compress_application
