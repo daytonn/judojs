@@ -4,7 +4,9 @@ module Judo
       require "fssm"
       project_path = Dir.getwd << '/'
       raise "judo.conf was not located in #{project_path}" unless File.exists? "#{project_path}judo.conf"
-      puts ">>> Judo is watching for changes. Press Ctrl-C to stop."
+      color_start = "\e[32m"
+      color_end = "\e[0m"
+      puts "#{color_start}>>>#{color_end} Judo is watching for changes. Press Ctrl-C to stop."
       project = Judo::Project.init_with_config(project_path)
       project.update
 	  
@@ -13,7 +15,7 @@ module Judo
           glob "**/*.js"
 
           update do |base, relative|
-            puts "<<< change detected in #{relative}"
+            puts "#{color_start}<<<#{color_end} change detected in #{relative}"
             project.update
           end
 
@@ -27,7 +29,7 @@ module Judo
           glob "**/*.js"
 
           update do |base, relative|
-            puts ">>> change detected in #{relative}"
+            puts "#{@color_start}<<<#{@color_end} change detected in #{relative}"
             project.update
           end
 
@@ -41,7 +43,7 @@ module Judo
           glob "**/*.js"
 
           update do |base, relative|
-            puts "<<< change detected in #{relative}"
+            puts "#{color_start}<<<#{color_end} change detected in #{relative}"
             project.update
           end
 
@@ -55,7 +57,7 @@ module Judo
           glob "**/*.js"
 
           update do |base, relative|
-            puts "<<< change detected in #{relative}"
+            puts "#{color_start}<<<#{color_end} change detected in #{relative}"
             project.config.read
             project.update_application_file
             project.update
@@ -71,7 +73,7 @@ module Judo
           glob "**/*.conf"
           
           update do |base, relative|
-            puts "<<< change detected in #{relative}"
+            puts "#{color_start}<<<#{color_end} change detected in #{relative}"
             project.config.read
             project.update_application_file
             project.update
