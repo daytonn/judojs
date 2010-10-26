@@ -26,7 +26,7 @@ module Judo
        proj_dir += '/' unless proj_dir.match(/\/$/)
        proj_dir = '/' << proj_dir unless proj_dir.match(/^\//)
        
-       @color_start = "\e[33m"
+       @color_start = "\e[32m"
        @color_end = "\e[0m"
        
        @app_filename = name.downcase
@@ -42,7 +42,7 @@ module Judo
     end
     
     def create
-      puts "#{@color_start}<<<#{@color_end} Creating the #{@config.name} project in #{@project_path}" 
+      puts "#{@color_start}>>>#{@color_end} Creating the #{@config.name} project in #{@project_path}" 
       create_project_structure
       @config.create
       create_judo_lib_file
@@ -56,7 +56,7 @@ module Judo
       compile_modules
       update_application_file
       compress_application if @config.output == 'compressed'
-      puts "#{@color_start}<<<#{@color_end} application updated"
+      puts "#{@color_start}>>>#{@color_end} application updated"
     end
 
     def create_project_structure

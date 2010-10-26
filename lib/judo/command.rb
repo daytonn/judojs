@@ -4,9 +4,9 @@ module Judo
       require "fssm"
       project_path = Dir.getwd << '/'
       raise "judo.conf was not located in #{project_path}" unless File.exists? "#{project_path}judo.conf"
-      color_start = "\e[32m"
+      color_start = "\e[33m"
       color_end = "\e[0m"
-      puts "#{color_start}>>>#{color_end} Judo is watching for changes. Press Ctrl-C to stop."
+      puts "\e[32m>>>#{color_end} Judo is watching for changes. Press Ctrl-C to stop."
       project = Judo::Project.init_with_config(project_path)
       project.update
 	  
