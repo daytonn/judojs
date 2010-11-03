@@ -23,7 +23,7 @@ if (doesNotExist(isTypeof)) {
 			return (variable.constructor == type) ? true : false;
 		}
 		catch(error) {
-			document.write(error.message);
+			alert(error.message);
 		}
 	};
 }
@@ -40,8 +40,8 @@ if (doesNotExist(isNumber)) {
 	};
 }
 
-if (doesNotExist(Object.prototype['method'])) {
-	Object.prototype.method = function(name, func) {
+if (doesNotExist(Function.prototype['method'])) {
+	Function.prototype.method = function(name, func) {
 		try {
 			if (doesNotExist(name)) {
 				throw new SyntaxError("Object.method(name, func): name is undefined");
@@ -56,31 +56,9 @@ if (doesNotExist(Object.prototype['method'])) {
 			}
 		}
 		catch(error) {
-			document.write(error.message);
+			alert(error.message);
 		}
 	};
-}
-
-if (doesNotExist(Object.prototype['clone'])) {
-	Object.method('clone', function() {
-		if (typeof this !== 'object' || this === null) {
-			return this;
-		}
-
-        if (this instanceof Node || this instanceof NodeList || this instanceof NamedNodeMap) {
-            die('You cannot clone a Node, Nodelist or NamedNodeMap');
-        }
-
-		var clone = isTypeof(Array, this) ? [] : {};
-
-		for(var prop in this) {
-			if(this.hasOwnProperty(prop)) {
-				clone[prop] = this[prop];
-			}
-		}
-
-		return clone;
-	});
 }
 
 var JudoModule = function() {};
@@ -104,6 +82,6 @@ JudoApplication.method('addModule', function(name) {
 		this[name] = new JudoModule();
 	}
 	catch(error) {
-		document.write(error.message);
+		alert(error.message);
 	}
 });
