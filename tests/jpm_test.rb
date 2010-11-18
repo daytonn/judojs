@@ -1,10 +1,10 @@
 require 'test/unit'
-require '../lib/judo.rb'
+require '../lib/judojs.rb'
 
 class PackageManagerTest < Test::Unit::TestCase
   
   def test_can_import_package
-    Judo::PackageManager.import('somefile')
+    Judojs::PackageManager.import('somefile')
   end
 
 end

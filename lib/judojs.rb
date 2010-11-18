@@ -1,7 +1,7 @@
-module Judo
+module Judojs
 end
 
-module Judo
+module Judojs
   def version
     '0.9.1'
   end
@@ -27,5 +27,5 @@ end
 
 
 %w(dependencies configuration helpers project command jpm).each do |lib|
-  require "#{Judo.lib_directory}/judo/#{lib}"
+  require "#{Judojs.lib_directory}/judojs/#{lib}"
 end

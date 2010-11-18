@@ -1,0 +1,52 @@
+#!/usr/bin/env ruby
+
+root = File.expand_path(File.join(File.dirname(__FILE__), "../lib"))
+
+begin
+  require "simpleconsole"
+  require "fssm"
+  require "#{root}/judojs.rb"
+rescue LoadError
+  require "rubygems"
+  require "simpleconsole"
+  require "fssm"
+  require "#{root}/judojs.rb"
+end
+# TODO get rid of the SimpleConsole dependency
+class Controller < SimpleConsole::Controller
+  params :string => {:n => :name,
+                     :d => :directory},
+         :bool => {:h => :help}
+         
+  def default
+    Judojs::Command.help
+  end
+  
+  def help
+    Judojs::Command.help
+  end
+  
+  def create
+    name = params[:name]
+    directory = params[:directory] || '/'
+    raise 'name is undefined: judojs create -n "MyAppName"' if name.nil?
+    Judojs::Command.create(name, directory)
+  end
+  
+  def compile
+    Judojs::Command.compile
+  end
+  
+  def watch
+    Judojs::Command.watch
+  end
+  
+  def import
+    Judojs::Command.import
+  end
+end
+
+class View < SimpleConsole::View
+end
+
+SimpleConsole::Application.run(ARGV, Controller, View)

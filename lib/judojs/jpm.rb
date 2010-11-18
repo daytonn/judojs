@@ -1,17 +1,17 @@
-module Judo
+module Judojs
   module PackageManager
     
     def import(package)
       dir = Dir.getwd
       package_path = dir + '/' + package
-      full_package_path = Judo.repository_root + package
+      full_package_path = Judojs.repository_root + package
       
       raise "#{package_path} is not a directory" unless File.directory? "#{package_path}"
       raise "#{package_path} does not exist" unless File.exists? "#{package_path}"
-      raise "#{Judo.repository_root}#{package} already exists" if File.exists? "#{Judo.repository_root}#{package}"
+      raise "#{Judojs.repository_root}#{package} already exists" if File.exists? "#{Judojs.repository_root}#{package}"
       
       Dir.mkdir(full_package_path) unless File.exists?(full_package_path)
-      FileUtils.cp_r(package_path, Judo.repository_root)
+      FileUtils.cp_r(package_path, Judojs.repository_root)
     end
     
     def install(packages)
@@ -22,7 +22,7 @@ module Judo
     
     def uninstall(packages)
       packages.each do |package|
-        package_path = Judo.repository_root + package
+        package_path = Judojs.repository_root + package
         raise "no program named #{package} installed" unless File.directory? "#{package_path}"
         
         FileUtils.rm_r package_path
@@ -43,7 +43,7 @@ module Judo
       puts <<-DOC
 
 Description: 
-The jpm package managers enables you to manage the judo packages installed on your system:
+The jpm package managers enables you to manage the judojs packages installed on your system:
 
 Usage: jpm [action]
 
@@ -51,7 +51,7 @@ Actions:
 install  Install a package
 
 Example:
-// Install the fancybox plugin from the judo repository
+// Install the fancybox plugin from the judojs repository
 jpm install fancybox
     DOC
     end

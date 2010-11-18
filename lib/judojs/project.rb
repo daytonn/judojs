@@ -1,8 +1,8 @@
-module Judo
+module Judojs
   class Project
     
     def self.init_with_config(project_path)
-      config = Judo::Configuration.new project_path
+      config = Judojs::Configuration.new project_path
       config.read
       
       project = Project.new
@@ -30,8 +30,8 @@ module Judo
        @color_end = "\e[0m"
        
        @app_filename = name.downcase
-       @project_path = "#{Judo.root_directory}#{proj_dir}"
-       @config = Judo::Configuration.new @project_path, name
+       @project_path = "#{Judojs.root_directory}#{proj_dir}"
+       @config = Judojs::Configuration.new @project_path, name
        @manifest = Array['application',
                          'elements',
                          'lib',
@@ -70,10 +70,10 @@ module Judo
     
     def create_judo_lib_file
       judo_lib_secretary = Sprockets::Secretary.new(
-        :root         => "#{Judo.base_directory}",
+        :root         => "#{Judojs.base_directory}",
         :asset_root   => "#{@config.asset_root}",
         :load_path    => ["repository"],
-        :source_files => ["repository/judo/core/judo.js"]
+        :source_files => ["repository/judojs/core/judo.js"]
       )
       
       judo_lib = judo_lib_secretary.concatenation
@@ -84,10 +84,10 @@ module Judo
     
     def create_utility_lib_file
       utility_lib_secretary = Sprockets::Secretary.new(
-        :root         => "#{Judo.base_directory}",
+        :root         => "#{Judojs.base_directory}",
         :asset_root   => "#{@config.asset_root}",
         :load_path    => ["repository"],
-        :source_files => ["repository/judo/utilities/all.js"]
+        :source_files => ["repository/judojs/utilities/all.js"]
       )
       
       utility_lib = utility_lib_secretary.concatenation
@@ -101,16 +101,16 @@ module Judo
       
       #puts File.exists?("#{@project_path}application/#{@app_filename}.js") ? "application/#{@app_filename}.js updated" : "application/#{@app_filename}.js created"
       File.open(filename, "w+") do |file|
-        file << "//-- Judo #{Time.now.to_s}  --//\n"
+        file << "//-- Judojs #{Time.now.to_s}  --//\n"
         file << File.open("#{@project_path}lib/judo.js", 'r').readlines.join('')
         file << "\nvar #{@config.name} = new JudoApplication();"
       end
     end
     
     def import_javascripts
-      File.copy "#{Judo.base_directory}/repository/judo/tests/index.html", "#{@project_path}tests"
-      File.copy "#{Judo.base_directory}/repository/judo/tests/judo.test.js", "#{@project_path}tests"
-      File.copy "#{Judo.base_directory}/repository/judo/tests/judo.utilities.test.js", "#{@project_path}tests"
+      File.copy "#{Judojs.base_directory}/repository/judojs/tests/index.html", "#{@project_path}tests"
+      File.copy "#{Judojs.base_directory}/repository/judojs/tests/judojs.test.js", "#{@project_path}tests"
+      File.copy "#{Judojs.base_directory}/repository/judojs/tests/judojs.utilities.test.js", "#{@project_path}tests"
     end
     
     def get_modules      
@@ -120,7 +120,7 @@ module Judo
     
     def compile_modules
       @modules.each do |module_file|
-        module_filename = Judo::Helpers.create_module_filename module_file
+        module_filename = Judojs::Helpers.create_module_filename module_file
         create_module_file module_file, module_filename
       end
     end
@@ -129,7 +129,7 @@ module Judo
         module_src = "#{@project_path}modules/#{module_file}"
         
         judo_lib_secretary = Sprockets::Secretary.new(
-          :root         => "#{Judo.base_directory}",
+          :root         => "#{Judojs.base_directory}",
           :asset_root   => "#{@config.asset_root}",
           :load_path    => ["repository"],
           :source_files => ["#{module_src}"]
@@ -147,7 +147,7 @@ module Judo
       message = File.exists?("#{@project_path}application/#{@app_filename}.js") ? "application/#{@app_filename}.js updated" : "application/#{@app_filename}.js created"      
       
       content = String.new
-      content << "/* Judo #{Time.now.to_s} */\n"
+      content << "/* Judojs #{Time.now.to_s} */\n"
       content << "//= require \"../lib/judo.js\"\n\n"
       content << "\nvar #{@config.name} = new JudoApplication();"
       
@@ -155,14 +155,14 @@ module Judo
       File.open(filename, "w+") do |file|
         file << content
         @config.autoload.each do |auto_file|
-          file << "\n\n/*---------- Judo autoload #{auto_file} ----------*/"
+          file << "\n\n/*---------- Judojs autoload #{auto_file} ----------*/"
           file << "\n//= require #{auto_file}\n" if auto_file.match(/^\<.+\>$/)
           file << "\n//= require \"#{auto_file}\"\n" if auto_file.match(/^[^\<].+|[^\>]$/)
         end
       end
       
       judo_lib_secretary = Sprockets::Secretary.new(
-        :root         => "#{Judo.base_directory}",
+        :root         => "#{Judojs.base_directory}",
         :asset_root   => "#{@config.asset_root}",
         :load_path    => ["repository"],
         :source_files => ["#{filename}"]

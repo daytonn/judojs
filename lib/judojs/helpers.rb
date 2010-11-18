@@ -1,4 +1,4 @@
-module Judo
+module Judojs
   module Helpers
     
     def create_module_filename(module_name)

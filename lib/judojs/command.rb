@@ -1,13 +1,13 @@
-module Judo
+module Judojs
   module Command
     def watch
       require "fssm"
       project_path = Dir.getwd << '/'
-      raise "judo.conf was not located in #{project_path}" unless File.exists? "#{project_path}judo.conf"
+      raise "judojs.conf was not located in #{project_path}" unless File.exists? "#{project_path}judojs.conf"
       color_start = "\e[33m"
       color_end = "\e[0m"
-      puts "\e[32m>>>#{color_end} Judo is watching for changes. Press Ctrl-C to stop."
-      project = Judo::Project.init_with_config(project_path)
+      puts "\e[32m>>>#{color_end} Judojs is watching for changes. Press Ctrl-C to stop."
+      project = Judojs::Project.init_with_config(project_path)
       project.update
 	  
       FSSM.monitor do
@@ -85,49 +85,49 @@ module Judo
     end
 
     def create(name, directory = false)
-      raise 'you must specify a project name: judo create -n "ProjectName"' if name.nil?
-      project = directory ? Judo::Project.new(name, directory) : Judo::Project.new(name)
+      raise 'you must specify a project name: judojs create -n "ProjectName"' if name.nil?
+      project = directory ? Judojs::Project.new(name, directory) : Judojs::Project.new(name)
       project.create
     end
     
     def compile
       project_path = Dir.getwd << '/'
-      raise "judo.conf was not located in #{project_path}" unless File.exists? "#{project_path}/judo.conf"
-      project = Judo::Project.init_with_config(project_path)
+      raise "judojs.conf was not located in #{project_path}" unless File.exists? "#{project_path}/judojs.conf"
+      project = Judojs::Project.init_with_config(project_path)
       project.update
     end
     
     def import(package)
-      Judo::PackageManager.import(package)
+      Judojs::PackageManager.import(package)
     end
 
     def help
       puts <<-DOC
       
 Description: 
-The judo command line tool will compile your judo application into modules.
-To compile your judo application into module files:
+The judojs command line tool will compile your judojs application into modules.
+To compile your judojs application into module files:
 
-Usage: judo [action] [options]
+Usage: judojs [action] [options]
   
 Actions:
-  compile  Compiles the judo project in the current working directory
+  compile  Compiles the judojs project in the current working directory
   watch    Watches the current working directory for 
            file changes and compiles when files change
-  create   Generates judo application architecture and files
+  create   Generates judojs application architecture and files
   
 Options:
-  -n, --name       Name of the judo application to create
-  -d, --directory  Optional install directory for a new judo project
+  -n, --name       Name of the judojs application to create
+  -d, --directory  Optional install directory for a new judojs project
                    (creates the folder if it does not exist)
   
 Example:
-  // Generate a new judo application in the js folder
+  // Generate a new judojs application in the js folder
   // (creates folder if it doesn't exist)
-  judo create -n "MyApplication" -d "js"
+  judojs create -n "MyApplication" -d "js"
   
-  // cd to the judo root folder (ie. js)
-  judo watch -or- judo compile
+  // cd to the judojs root folder (ie. js)
+  judojs watch -or- judojs compile
       DOC
     end
 

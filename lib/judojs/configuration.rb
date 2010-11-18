@@ -1,4 +1,4 @@
-module Judo
+module Judojs
     class Configuration
       
       attr_reader :project_path,
@@ -19,12 +19,12 @@ module Judo
       end
       
       def create
-        conf_exists = File.exists? "#{@project_path}judo.conf"
+        conf_exists = File.exists? "#{@project_path}judojs.conf"
         
         if conf_exists
           autoload = @autoload.empty? ? 'autoload: []' : 'autoload: ["' << @autoload.join('", "') << '"]'
         else
-          autoload = @autoload.empty? ? '#autoload: ["<judo/utilities/all>", "../plugins/local_lib_file"]' : @autoload.join('", "')
+          autoload = @autoload.empty? ? '#autoload: ["<judojs/utilities/all>", "../plugins/local_lib_file"]' : @autoload.join('", "')
         end
         
         conf_content = <<-CONF
@@ -35,18 +35,18 @@ output: #{@output}
 #{autoload}
         CONF
         
-        File.open("#{@project_path}judo.conf", "w+") do |conf_file|
+        File.open("#{@project_path}judojs.conf", "w+") do |conf_file|
           conf_file << conf_content
         end
         
-        message = conf_exists ? "judo.conf updated" : "judo.conf created"
+        message = conf_exists ? "judojs.conf updated" : "judojs.conf created"
         puts message
       end
       
       def read
         begin
-          raise IOError, "#{@project_path}judo.conf does not exist", caller unless File.exists? "#{@project_path}judo.conf"
-          config_yaml = File.open("#{@project_path}judo.conf", "r").readlines.join('')
+          raise IOError, "#{@project_path}judojs.conf does not exist", caller unless File.exists? "#{@project_path}judojs.conf"
+          config_yaml = File.open("#{@project_path}judojs.conf", "r").readlines.join('')
           config = YAML::load config_yaml
           
           @project_path = config['project_path']

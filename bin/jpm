@@ -5,29 +5,29 @@ root = File.expand_path(File.join(File.dirname(__FILE__), "../lib"))
 begin
   require "simpleconsole"
   require "fileutils"
-  require "#{root}/judo.rb"
+  require "#{root}/judojs.rb"
 rescue LoadError
   require "rubygems"
   require "simpleconsole"
   require "fileutils"
-  require "#{root}/judo.rb"
+  require "#{root}/judojs.rb"
 end
 
 class Controller < SimpleConsole::Controller
   params :bool => {:h => :help}
   
   def default
-    Judo::PackageManager.help
+    Judojs::PackageManager.help
   end
   
   def install
     packages = ARGV.uniq!.reject{ |a| a.match(/^install$/) }
-    Judo::PackageManager.install(packages)
+    Judojs::PackageManager.install(packages)
   end
   
   def import
     package = ARGV[1]
-    Judo::PackageManager.import(package)
+    Judojs::PackageManager.import(package)
   end
   
   def uninstall
@@ -35,7 +35,7 @@ class Controller < SimpleConsole::Controller
     puts "Are you sure you wish to uninstall the following packages (y/n)? : \e[31m" + packages.join(", ") + "\e[0m"
     confirm = STDIN.gets.chomp
     confirmed_uninstall = confirm.match(/^y/i) ? true : false
-    Judo::PackageManager.uninstall(packages) if confirmed_uninstall
+    Judojs::PackageManager.uninstall(packages) if confirmed_uninstall
   end
 end
 
