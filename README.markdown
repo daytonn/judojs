@@ -10,4 +10,4 @@ You can install Judojs using RubyGems. This is the easiest way of installing and
 If you want to use the development code you should clone the Git repository and add the binary to your path:
 
     $ git clone git://github.com/textnotspeech/judojs.git
-    $ exprot PATH=/path/to/judojs/bin/judojs:$PATH
+    $ export PATH=/path/to/judojs/bin/judojs:$PATH
