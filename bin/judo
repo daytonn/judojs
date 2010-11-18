@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby -w
+#!/usr/bin/env ruby
 
 root = File.expand_path(File.join(File.dirname(__FILE__), "../lib"))
 
@@ -12,7 +12,7 @@ rescue LoadError
   require "fssm"
   require "#{root}/judo.rb"
 end
-
+# TODO get rid of the SimpleConsole dependency
 class Controller < SimpleConsole::Controller
   params :string => {:n => :name,
                      :d => :directory},

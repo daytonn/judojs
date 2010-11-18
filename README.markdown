@@ -1,0 +1,2 @@
+## About
+Judo is a command line application written in ruby that leverages the [Sprockets](http://getsprockets.org/) JavaScript compiler to create modular javascript applications without having to compile your scripts manually. Judo also contains a very barebones JavaScript framework to enforce best practices like namespacing and modular separation.
