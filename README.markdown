@@ -7,6 +7,7 @@ You can install Judojs using RubyGems. This is the easiest way of installing and
 ```bash
   $ gem install judojs
 ```
+
 If you want to use the development code you should clone the Git repository and add the binary to your path:
 
 ```bash
