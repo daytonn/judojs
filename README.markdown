@@ -4,13 +4,11 @@ Judojs is a command line application written in ruby that leverages the [Sprocke
 ## Installation
 
 You can install Judojs using RubyGems. This is the easiest way of installing and recommended for most users.
-```bash
+
   $ gem install judojs
-```
+
 
 If you want to use the development code you should clone the Git repository and add the binary to your path:
 
-```bash
   $ git clone git://github.com/textnotspeech/judojs.git
   $ export PATH=/path/to/judojs/bin:$PATH
-```
