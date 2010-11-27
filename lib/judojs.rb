@@ -22,7 +22,11 @@ module Judojs
     base_directory + '/repository/'
   end
   
-  module_function :base_directory, :lib_directory, :root_directory, :repository_root
+  module_function :version,
+                  :base_directory,
+                  :lib_directory,
+                  :root_directory,
+                  :repository_root
 end
 
 
