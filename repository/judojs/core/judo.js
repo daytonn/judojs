@@ -38,3 +38,22 @@ JudoModule.method('setData', function(key, value) {
 		return false;
 	}
 });
+
+var JudoApplication = function() {};
+
+JudoApplication.method('addModule', function(name) {
+	try {
+		if (doesNotExist(name)) {
+			throw new SyntaxError("JudoApplication.addModule(name): name is undefined");
+		}
+		
+		if (exists(this[name])) {
+			throw new SyntaxError("JudoApplication.addModule(name): '" + name + "' already declared");
+		}
+		
+		this[name] = new JudoModule();
+	}
+	catch(error) {
+		alert(error.message);
+	}
+});
