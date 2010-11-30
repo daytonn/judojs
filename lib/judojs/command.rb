@@ -69,6 +69,22 @@ module Judojs
           end
         end
         
+        path "#{project_path}plugins" do
+          glob "**/*.js"
+
+          update do |base, relative|
+            puts "#{color_start}<<<#{color_end} change detected in #{relative}"
+            project.config.read
+            project.update_application_file
+            project.update
+          end
+
+          create do |base, relative|
+            puts "+++ created #{relative}"
+            project.update
+          end
+        end
+        
         path "#{project_path}" do
           glob "**/*.conf"
           
