@@ -56,7 +56,8 @@ module Judojs
       compile_modules
       update_application_file
       compress_application if @config.output == 'compressed'
-      puts "#{@color_start}>>>#{@color_end} application updated"
+      puts "#{@color_start}>>>#{@color_end} application updated" unless @errors
+      @errors = false
     end
 
     def create_project_structure
@@ -75,10 +76,10 @@ module Judojs
         :load_path    => ["repository"],
         :source_files => ["repository/judojs/core/judo.js"]
       )
-      
+
       judo_lib = judo_lib_secretary.concatenation
       judo_lib.save_to "#{@project_path}lib/judo.js"
-      
+
       puts "lib/judo.js created"
     end
     
@@ -126,21 +127,27 @@ module Judojs
     end
     
     def create_module_file(module_file, module_name)
-        module_src = "#{@project_path}modules/#{module_file}"
+        begin
+          module_src = "#{@project_path}modules/#{module_file}"
+
+          judo_lib_secretary = Sprockets::Secretary.new(
+            :root         => "#{Judojs.base_directory}",
+            :asset_root   => "#{@config.asset_root}",
+            :load_path    => ["repository"],
+            :source_files => ["#{module_src}"]
+          )
+
+          module_file = judo_lib_secretary.concatenation
+          message = File.exists?("#{@project_path}application/#{module_name}.js") ? "application/#{module_name}.js updated" : "application/#{module_name}.js created"
+          module_file.save_to "#{@project_path}application/#{module_name}.js"
+          judo_lib_secretary.install_assets
+
+          #puts message
+        rescue Exception => error
+          @errors = true
+          puts "Sprockets error: #{error.message}"
+        end
         
-        judo_lib_secretary = Sprockets::Secretary.new(
-          :root         => "#{Judojs.base_directory}",
-          :asset_root   => "#{@config.asset_root}",
-          :load_path    => ["repository"],
-          :source_files => ["#{module_src}"]
-        )
-
-        module_file = judo_lib_secretary.concatenation
-        message = File.exists?("#{@project_path}application/#{module_name}.js") ? "application/#{module_name}.js updated" : "application/#{module_name}.js created"
-        module_file.save_to "#{@project_path}application/#{module_name}.js"
-        judo_lib_secretary.install_assets
-
-        #puts message
     end
     
     def update_application_file
@@ -161,18 +168,21 @@ module Judojs
         end
       end
       
-      judo_lib_secretary = Sprockets::Secretary.new(
-        :root         => "#{Judojs.base_directory}",
-        :asset_root   => "#{@config.asset_root}",
-        :load_path    => ["repository"],
-        :source_files => ["#{filename}"]
-      )
-      
-      application_file = judo_lib_secretary.concatenation
-      judo_lib_secretary.install_assets
-      application_file.save_to "#{filename}"
-      
-      #puts message
+      begin
+        judo_lib_secretary = Sprockets::Secretary.new(
+          :root         => "#{Judojs.base_directory}",
+          :asset_root   => "#{@config.asset_root}",
+          :load_path    => ["repository"],
+          :source_files => ["#{filename}"]
+        )
+
+        application_file = judo_lib_secretary.concatenation
+        judo_lib_secretary.install_assets
+        application_file.save_to "#{filename}"
+      rescue Exception => error
+        @errors = true
+        puts "\e[0;31m!!!\e[0m Sprockets error: #{error.message}"
+      end
     end
     
     def compress_application
