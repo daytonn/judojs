@@ -9,6 +9,7 @@ class TC_TestProject < Test::Unit::TestCase
   
   def test_can_update_project
     @path = File.dirname(__FILE__)
+    puts "TEST PATH #{@path}"
     File.copy("#{@path}/fixtures/global.module.js", "#{@path}/js/modules")
     File.copy("#{@path}/fixtures/test.module.js", "#{@path}/js/modules")
     File.copy("#{@path}/fixtures/test.elements.js", "#{@path}/js/elements")
@@ -46,25 +47,25 @@ class TC_TestProject < Test::Unit::TestCase
   end
   
   def teardown
-    File.delete('/Volumes/Storage/Development/judojs/tests/js/judojs.conf') if File.exists?('/Volumes/Storage/Development/judojs/tests/js/judojs.conf')
-    File.delete('/Volumes/Storage/Development/judojs/tests/js/application/myapplication.js') if File.exists?('/Volumes/Storage/Development/judojs/tests/js/application/myapplication.js')
-    File.delete('/Volumes/Storage/Development/judojs/tests/js/application/global.js') if File.exists?('/Volumes/Storage/Development/judojs/tests/js/application/global.js')
-    File.delete('/Volumes/Storage/Development/judojs/tests/js/application/test.js') if File.exists?('/Volumes/Storage/Development/judojs/tests/js/application/test.js')
-    File.delete('/Volumes/Storage/Development/judojs/tests/js/elements/test.elements.js') if File.exists?('/Volumes/Storage/Development/judojs/tests/js/elements/test.elements.js')
-    File.delete('/Volumes/Storage/Development/judojs/tests/js/models/test.model.js') if File.exists?('/Volumes/Storage/Development/judojs/tests/js/models/test.model.js')    
-    File.delete('/Volumes/Storage/Development/judojs/tests/js/lib/judojs.js') if File.exists?('/Volumes/Storage/Development/judojs/tests/js/lib/judojs.js')
-    File.delete('/Volumes/Storage/Development/judojs/tests/js/lib/utilities.js') if File.exists?('/Volumes/Storage/Development/judojs/tests/js/lib/utilities.js')
-    File.delete("/Volumes/Storage/Development/judojs/tests/js/tests/index.html") if File.exists?("/Volumes/Storage/Development/judojs/tests/js/tests/index.html")
-    File.delete("/Volumes/Storage/Development/judojs/tests/js/tests/judojs.test.js") if File.exists?("/Volumes/Storage/Development/judojs/tests/js/tests/judojs.test.js")
-    File.delete("/Volumes/Storage/Development/judojs/tests/js/tests/judojs.utilities.test.js") if File.exists?("/Volumes/Storage/Development/judojs/tests/js/tests/judojs.utilities.test.js")
-    File.delete('/Volumes/Storage/Development/judojs/tests/js/modules/global.module.js') if File.exists?('/Volumes/Storage/Development/judojs/tests/js/modules/global.module.js')
-    File.delete('/Volumes/Storage/Development/judojs/tests/js/modules/test.module.js') if File.exists?('/Volumes/Storage/Development/judojs/tests/js/modules/test.module.js')
+    #File.delete('/Volumes/Storage/Development/judojs/tests/js/judojs.conf') if File.exists?('/Volumes/Storage/Development/judojs/tests/js/judojs.conf')
+    #File.delete('/Volumes/Storage/Development/judojs/tests/js/application/myapplication.js') if File.exists?('/Volumes/Storage/Development/judojs/tests/js/application/myapplication.js')
+    #File.delete('/Volumes/Storage/Development/judojs/tests/js/application/global.js') if File.exists?('/Volumes/Storage/Development/judojs/tests/js/application/global.js')
+    #File.delete('/Volumes/Storage/Development/judojs/tests/js/application/test.js') if File.exists?('/Volumes/Storage/Development/judojs/tests/js/application/test.js')
+    #File.delete('/Volumes/Storage/Development/judojs/tests/js/elements/test.elements.js') if File.exists?('/Volumes/Storage/Development/judojs/tests/js/elements/test.elements.js')
+    #File.delete('/Volumes/Storage/Development/judojs/tests/js/models/test.model.js') if File.exists?('/Volumes/Storage/Development/judojs/tests/js/models/test.model.js')    
+    #File.delete('/Volumes/Storage/Development/judojs/tests/js/lib/judojs.js') if File.exists?('/Volumes/Storage/Development/judojs/tests/js/lib/judojs.js')
+    #File.delete('/Volumes/Storage/Development/judojs/tests/js/lib/utilities.js') if File.exists?('/Volumes/Storage/Development/judojs/tests/js/lib/utilities.js')
+    #File.delete("/Volumes/Storage/Development/judojs/tests/js/tests/index.html") if File.exists?("/Volumes/Storage/Development/judojs/tests/js/tests/index.html")
+    #File.delete("/Volumes/Storage/Development/judojs/tests/js/tests/judojs.test.js") if File.exists?("/Volumes/Storage/Development/judojs/tests/js/tests/judojs.test.js")
+    #File.delete("/Volumes/Storage/Development/judojs/tests/js/tests/judojs.utilities.test.js") if File.exists?("/Volumes/Storage/Development/judojs/tests/js/tests/judojs.utilities.test.js")
+    #File.delete('/Volumes/Storage/Development/judojs/tests/js/modules/global.module.js') if File.exists?('/Volumes/Storage/Development/judojs/tests/js/modules/global.module.js')
+    #File.delete('/Volumes/Storage/Development/judojs/tests/js/modules/test.module.js') if File.exists?('/Volumes/Storage/Development/judojs/tests/js/modules/test.module.js')
 
-    @test_project.manifest.each do |folder|
-      Dir.delete("/Volumes/Storage/Development/judojs/tests/js/#{folder}") if File.exists? "/Volumes/Storage/Development/judojs/tests/js/#{folder}"
-    end
+    #@test_project.manifest.each do |folder|
+    #  Dir.delete("/Volumes/Storage/Development/judojs/tests/js/#{folder}") if File.exists? "/Volumes/Storage/Development/judojs/tests/js/#{folder}"
+    #end
     
-    Dir.delete('/Volumes/Storage/Development/judojs/tests/js') if File.exists?('/Volumes/Storage/Development/judojs/tests/js')
+    #Dir.delete('/Volumes/Storage/Development/judojs/tests/js') if File.exists?('/Volumes/Storage/Development/judojs/tests/js')
   end
 
 end
