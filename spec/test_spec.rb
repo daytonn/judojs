@@ -1,5 +1,5 @@
-describe 'Spec Test' do
-  it 'should require rspec' do
-    true.should be_true
-  end
+require "spec_helper"
+
+describe Judojs do
+  it 'should have lots of test coverage'
 end

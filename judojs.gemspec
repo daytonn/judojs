@@ -2,13 +2,13 @@
 
 Gem::Specification.new do |s|
   s.name = %q{judojs}
-  s.version = "0.9.2"
+  s.version = "0.9.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Dayton Nolan"]
-  s.date = %q{2010-06-25}
+  s.date = Time.now.strftime '%Y-%m-%d'
   s.default_executable = %q{bin/judojs}
-  s.description = %q{judojs is a javascript meta framework. judojs uses the Sprockets engine (http://getsprockets.org/) to allow you to create modular javascript applications.}
+  s.description = %q{JudoJs is a javascript meta framework. JudoJs uses the Sprockets engine (http://getsprockets.org/) to allow you to create modular javascript applications.}
   s.email = %q{daytonn@gmail.com}
   s.executables = ["judojs", "jpm"]
   s.files = ["bin/jpm",
@@ -25,6 +25,8 @@ Gem::Specification.new do |s|
              "repository/jquery/1.2.6.js",
              "repository/jquery/1.3.2.js",
              "repository/jquery/1.4.2.js",
+             "repository/jquery/1.4.3.js",
+             "repository/jquery/1.4.4.js",
              "repository/jquery/latest.js",
              "repository/judojs/core/existence.js",
              "repository/judojs/core/extend.js",
