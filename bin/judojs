@@ -1,52 +1,34 @@
 #!/usr/bin/env ruby
 
-root = File.expand_path(File.join(File.dirname(__FILE__), "../lib"))
+$: << File.expand_path(File.join(File.dirname(__FILE__), "../lib"))
 
-begin
-  require "simpleconsole"
-  require "fssm"
-  require "#{root}/judojs.rb"
-rescue LoadError
-  require "rubygems"
-  require "simpleconsole"
-  require "fssm"
-  require "#{root}/judojs.rb"
-end
-# TODO get rid of the SimpleConsole dependency
-class Controller < SimpleConsole::Controller
-  params :string => {:n => :name,
-                     :d => :directory},
-         :bool => {:h => :help}
-         
-  def default
+require 'rubygems'
+require 'rubikon'
+require 'judojs.rb'
+
+class JudoJs < Rubikon::Application::Base
+  default do
     Judojs::Command.help
   end
   
-  def help
-    Judojs::Command.help
+  command :compile do
+    JudoJs::Command.compile
   end
   
-  def create
-    name = params[:name]
-    directory = params[:directory] || '/'
-    raise 'name is undefined: judojs create -n "MyAppName"' if name.nil?
-    Judojs::Command.create(name, directory)
+  command :watch do
+    JudoJs::Command.watch
   end
   
-  def compile
-    Judojs::Command.compile
+  command :import do
+    JudoJs::Command.import
   end
   
-  def watch
-    Judojs::Command.watch
+  option :directory, [:dir] do
+    @directory = dir
   end
-  
-  def import
-    Judojs::Command.import
-  end
+  option :p => :directory
+  command :create, [:app_name] do
+    dir = @directory || '/'
+    Judojs::Command.create(app_name, dir)
+  end  
 end
-
-class View < SimpleConsole::View
-end
-
-SimpleConsole::Application.run(ARGV, Controller, View)

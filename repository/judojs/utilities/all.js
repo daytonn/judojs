@@ -1,2 +1,3 @@
-//= require "array.js"
-//= require "string.js"
+//= require "array"
+//= require "string"
+//= require "object"

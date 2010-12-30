@@ -130,20 +130,14 @@ Actions:
   compile  Compiles the judojs project in the current working directory
   watch    Watches the current working directory for 
            file changes and compiles when files change
-  create   Generates judojs application architecture and files
-  
-Options:
-  -n, --name       Name of the judojs application to create
-  -d, --directory  Optional install directory for a new judojs project
-                   (creates the folder if it does not exist)
+  create   Generates judojs application architecture and files  
+           Options:
+             -p, --directory  Optional install directory for a new judojs project
+                              (creates the folder if it does not exist)
   
 Example:
-  // Generate a new judojs application in the js folder
-  // (creates folder if it doesn't exist)
-  judojs create -n "MyApplication" -d "js"
-  
-  // cd to the judojs root folder (ie. js)
-  judojs watch -or- judojs compile
+  judojs create MyApplication
+  judojs watch
       DOC
     end
 

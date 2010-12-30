@@ -151,20 +151,30 @@ module Judojs
     end
     
     def update_application_file
-      message = File.exists?("#{@project_path}application/#{@app_filename}.js") ? "application/#{@app_filename}.js updated" : "application/#{@app_filename}.js created"      
-      
-      content = String.new
-      content << "/* Judojs #{Time.now.to_s} */\n"
-      content << "//= require \"../lib/judo.js\"\n\n"
-      content << "\nvar #{@config.name} = new JudoApplication();"
-      
+      message = File.exists?("#{@project_path}application/#{@app_filename}.js") ? "application/#{@app_filename}.js updated" : "application/#{@app_filename}.js created"            
       filename = "#{@project_path}application/#{@app_filename}.js"
+      
       File.open(filename, "w+") do |file|
-        file << content
+        
+        judo_extensions = Array.new
+        
         @config.autoload.each do |auto_file|
-          file << "\n\n/*---------- Judojs autoload #{auto_file} ----------*/"
-          file << "\n//= require #{auto_file}\n" if auto_file.match(/^\<.+\>$/)
-          file << "\n//= require \"#{auto_file}\"\n" if auto_file.match(/^[^\<].+|[^\>]$/)
+          if auto_file.match(/\<judojs\/*/)
+            judo_extensions << auto_file
+          else
+            file << "/*---------- Judojs autoload #{auto_file} ----------*/"
+            file << "\n//= require #{auto_file}\n\n" if auto_file.match(/^\<.+\>$/)
+            file << "\n//= require \"#{auto_file}\"\n\n" if auto_file.match(/^[^\<].+|[^\>]$/)
+          end
+        end
+        
+        file << "/* Judojs #{Time.now.to_s} */\n"
+        file << "//= require \"../lib/judo.js\"\n\n"
+        file << "\nvar #{@config.name} = new JudoApplication();\n\n"
+        
+        judo_extensions.each do |extension|
+          file << "/*---------- Judojs autoload #{extension} ----------*/"
+          file << "\n//= require #{extension}\n\n" if extension.match(/^\<.+\>$/)
         end
       end
       

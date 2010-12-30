@@ -10,5 +10,4 @@ rescue LoadError
   require 'jsmin'
   require 'tempfile'
   require 'sprockets'
-  require 'ftools'
 end

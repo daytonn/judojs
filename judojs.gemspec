@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{judojs}
-  s.version = "0.9.3"
+  s.version = "0.9.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Dayton Nolan"]
@@ -53,16 +53,13 @@ Gem::Specification.new do |s|
              "tests/fixtures/test.js",
              "tests/fixtures/test.model.js",
              "tests/fixtures/test.module.js",
-             "tests/fixtures/update.judojs.conf",
              "tests/fixtures/updated.myapplication.js",
              "tests/fixtures/utilities.js"]
   s.homepage = %q{http://textnotspeech.github.com/judojs/}
-  s.add_dependency 'simpleconsole'
+  s.add_dependency 'rubikon'
   s.add_dependency 'fssm'
-  s.add_dependency 'yaml'
   s.add_dependency 'jsmin'
   s.add_dependency 'sprockets'
-  s.add_dependency 'ftools'
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.4}
   s.summary = %q{judojs is a command line application to help you write clean, modular javascript applications.}
