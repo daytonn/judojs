@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
              "lib/judojs/dependencies.rb",
              "lib/judojs/helpers.rb",
              "lib/judojs/jpm.rb",
+             "lib/judojs/manifest.rb",
              "lib/judojs/project.rb",
              "LICENSE.markdown",
              "repository/jquery/1.1.4.js",

@@ -1,76 +1,83 @@
 module Judojs
     class Configuration
       
-      attr_reader :project_path,
-                  :name,
+      attr_reader :name,
+                  :project_path,
                   :app_filename,
                   :directory,
                   :output,
+                  :dependencies,
                   :autoload,
                   :config_path,
                   :asset_root
                   
       def initialize(project_path, name = 'JudoApplication')
-        @project_path = project_path
-        @asset_root = project_path
-        @name = name
-        @output = 'expanded'
-        @autoload = Array.new                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+        @defaults = {
+          :name => name,
+          :project_path => project_path,
+          :asset_root => project_path,
+          :output => 'expanded',
+          :dependencies => ['<jquery/latest>'],
+          :autoload => ['<judojs/utilities/all>']
+        }
+
+        @defaults.each do |label, setting|
+          instance_variable_set("@#{label}", setting)
+        end
       end
       
       def create
-        conf_exists = File.exists? "#{@project_path}judojs.conf"
-        
-        if conf_exists
-          autoload = @autoload.empty? ? 'autoload: []' : 'autoload: ["' << @autoload.join('", "') << '"]'
-        else
-          autoload = @autoload.empty? ? '#autoload: ["<judojs/utilities/all>", "../plugins/local_lib_file"]' : @autoload.join('", "')
-        end
-        
-        conf_content = <<-CONF
-project_path: #{@project_path}
-asset_root: #{@project_path}
-name: #{@name}
-output: #{@output}
-#{autoload}
+        default_content = conf_content @defaults
+        create_conf_file default_content
+      end
+      
+      def conf_content(options)
+        content = <<-CONF
+name: #{options[:name]}
+project_path: #{options[:project_path]}
+asset_root: #{options[:project_path]}
+output: #{options[:output]}
+dependencies: [#{options[:dependencies].join(', ')}]
+autoload: [#{options[:autoload].join(', ')}]
         CONF
-        
+      end
+      
+      def create_conf_file(content)
         File.open("#{@project_path}judojs.conf", "w+") do |conf_file|
-          conf_file << conf_content
+          conf_file << conf_content(@defaults)
         end
         
-        message = conf_exists ? "judojs.conf updated" : "judojs.conf created"
-        puts message
+        puts "judojs.conf created"
+      end
+      
+      def update
+        content = conf_content({
+          :name => @name,
+          :project_path => @project_path,
+          :asset_root => @project_path,
+          :output => @output,
+          :dependencies => @dependencies,
+          :autoload => @autoload
+        })
+        create_conf_file content
       end
       
       def read
         begin
           raise IOError, "#{@project_path}judojs.conf does not exist", caller unless File.exists? "#{@project_path}judojs.conf"
-          config_yaml = File.open("#{@project_path}judojs.conf", "r").readlines.join('')
-          config = YAML::load config_yaml
+          config = YAML.load_file("#{@project_path}judojs.conf")
           
           @project_path = config['project_path']
           @asset_root = config['asset_root']
           @name = config['name']
           @app_filename = config['name'].downcase
           @output = config['output']
+          @dependencies = config['dependencies'] || Array.new
           @autoload = config['autoload'] || Array.new
-        rescue RuntimeError => e
+        rescue IOError => e
           puts e.message
           puts e.backtrace.inspect
         end
-      end
-      
-      def update
-        create
-      end
-      
-      def set_config(config)
-        @name = config[:name] unless config[:name].nil?
-        @app_filename = config[:app_filename] unless config[:app_filename].nil? 
-        @directory = '/'
-        @output = config[:output] unless config[:output].nil?
-        @autoload = config[:autoload] || nil
       end
       
     end

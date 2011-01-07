@@ -3,7 +3,7 @@ end
 
 module Judojs
   def version
-    '0.9.1'
+    '0.9.4'
   end
   
   def base_directory
@@ -30,6 +30,6 @@ module Judojs
 end
 
 
-%w(dependencies configuration helpers project command jpm).each do |lib|
+%w(dependencies configuration helpers manifest project command jpm).each do |lib|
   require "#{Judojs.lib_directory}/judojs/#{lib}"
 end

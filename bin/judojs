@@ -2,25 +2,44 @@
 
 $: << File.expand_path(File.join(File.dirname(__FILE__), "../lib"))
 
-require 'rubygems'
-require 'rubikon'
-require 'judojs.rb'
+begin
+  require 'rubikon'
+  require 'judojs'
+rescue LoadError
+  require 'rubygems'
+  require 'rubikon'
+  require 'judojs'
+end
 
 class JudoJs < Rubikon::Application::Base
+  def initialize
+    @directory = '/'
+  end
+  
+  option :version
+  option :v => :version
   default do
-    Judojs::Command.help
+    if version.given?
+      time = Time.now
+      copyright_year = time.year == 2010 ? '2010' : '2010-' << time.year
+      puts 'JudoJs ' << Judojs.version
+      puts "Copyright (c) #{copyright_year} Dayton Nolan"
+      puts "Released under the MIT License"
+    else
+      Judojs::Command.help
+    end
   end
   
   command :compile do
-    JudoJs::Command.compile
+    Judojs::Command.compile
   end
   
   command :watch do
-    JudoJs::Command.watch
+    Judojs::Command.watch
   end
   
   command :import do
-    JudoJs::Command.import
+    Judojs::Command.import
   end
   
   option :directory, [:dir] do
@@ -28,7 +47,6 @@ class JudoJs < Rubikon::Application::Base
   end
   option :p => :directory
   command :create, [:app_name] do
-    dir = @directory || '/'
-    Judojs::Command.create(app_name, dir)
-  end  
+    Judojs::Command.create(app_name, @directory)
+  end
 end
