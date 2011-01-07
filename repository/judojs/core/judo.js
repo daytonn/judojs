@@ -58,10 +58,10 @@ JudoModule.method('run', function() {
 
 JudoModule.method('setData', function(key, value) {
 	try {
-		if(doesNotExist(key)) {
+		if(isUndefined(key)) {
 			throw new SyntaxError('JudoModule.setData(key, value): key is undefined');
 		}
-		if(isTypeof(String, key) && doesNotExist(value)) {
+		if(isTypeof(String, key) && isUndefined(value)) {
 			throw new SyntaxError('JudoModule.setData(key, value): value is undefined');
 		}
 		
@@ -89,11 +89,11 @@ var JudoApplication = function() {};
 
 JudoApplication.method('addModule', function(name) {
 	try {
-		if (doesNotExist(name)) {
+		if (isUndefined(name)) {
 			throw new SyntaxError("JudoApplication.addModule(name): name is undefined");
 		}
 		
-		if (exists(this[name])) {
+		if (isDefined(this[name])) {
 			throw new SyntaxError("JudoApplication.addModule(name): '" + name + "' already declared");
 		}
 		

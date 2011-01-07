@@ -25,7 +25,7 @@ String.method('rtrim', function() {
 
 String.method('each', function(callback) {
 	try {
-		if(doesNotExist(callback)) {
+		if(isUndefined(callback)) {
 			throw new SyntaxError("String.each(callback): callback is undefined");
 		}
 		

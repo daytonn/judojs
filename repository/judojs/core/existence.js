@@ -1,22 +1,22 @@
-if (exists === undefined) {
-	var exists = function(variable) {	
+if (isDefined === undefined) {
+	var isDefined = function(variable) {	
 		return (variable === undefined) ? false : true;
 	};
 }
 
-if (!exists(doesNotExist)) {
-	var doesNotExist = function(variable) {
+if (!isDefined(isUndefined)) {
+	var isUndefined = function(variable) {
 		return (variable === undefined) ? true : false;
 	};
 }
 
-if (doesNotExist(isTypeof)) {
+if (isUndefined(isTypeof)) {
 	var isTypeof = function(type, variable) {
 		try {
-			if (doesNotExist(type)) {
+			if (isUndefined(type)) {
 				throw new SyntaxError("isTypeof(Type, variable): type is undefined");
 			}
-			if (doesNotExist(variable)) {
+			if (isUndefined(variable)) {
 				throw new SyntaxError("isTypeof(Type, variable): variable is undefined");
 			}
 
@@ -28,7 +28,7 @@ if (doesNotExist(isTypeof)) {
 	};
 }
 
-if (doesNotExist(isNumber)) {
+if (isUndefined(isNumber)) {
 	var isNumber = function(suspect) {
 		if(isTypeof(Number, suspect)) {
 			return true;

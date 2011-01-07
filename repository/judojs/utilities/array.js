@@ -8,7 +8,7 @@ Array.method('not_empty', function() {
 
 Array.method('each', function(callback) {
 	try {
-		if(doesNotExist(callback)) {
+		if(isUndefined(callback)) {
 			throw new SyntaxError("Array.each(callback): callback is undefined");
 		}
 		

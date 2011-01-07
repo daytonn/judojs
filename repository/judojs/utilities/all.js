@@ -1,5 +1,4 @@
 //= require "array"
 //= require "string"
-//= require "object"
 //= require "number"
 //= require "css"
